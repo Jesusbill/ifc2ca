@@ -1,0 +1,125 @@
+# Command file generated for ifcOpenShell/BlenderBim
+# Aether Engineering - www.aethereng.com
+
+# Linear analysis with beam elements
+
+# STEP: INITIALIZE STUDY
+DEBUT(
+    PAR_LOT = 'OUI',
+)
+
+# STEP: READ MED FILE
+mesh = LIRE_MAILLAGE(
+    FORMAT = 'MED'
+)
+
+# STEP: DEFINE MODEL
+model = AFFE_MODELE(
+    MAILLAGE = mesh,
+    AFFE = (
+        _F(
+            TOUT = 'OUI',
+            PHENOMENE = 'MECANIQUE',
+            MODELISATION = '3D'
+        ),
+        _F(
+            GROUP_MA = 'lines',
+            PHENOMENE = 'MECANIQUE',
+            MODELISATION = 'POU_D_E'
+        )
+    )
+)
+
+# STEP: DEFINE MATERIALS
+matF_0 = DEFI_MATERIAU(
+    ELAS = _F(
+        E = 210000000.0,
+        NU = 0.2,
+        RHO = 7.8
+    )
+)
+
+material = AFFE_MATERIAU(
+    MAILLAGE = mesh,
+    AFFE = (
+        _F(
+            GROUP_MA = 'Beam001',
+            MATER = matF_0,
+        ),
+    )
+)
+
+# STEP: DEFINE ELEMENTS
+element = AFFE_CARA_ELEM(
+    MODELE = model,
+    POUTRE = (
+        _F(
+            GROUP_MA = 'Beam001',
+            SECTION = 'RECTANGLE',
+            CARA = ('HY', 'HZ'),
+            VALE = (0.2, 0.4)
+
+        ),
+    ),
+    ORIENTATION = (
+        _F(
+            GROUP_MA = 'Beam001',
+            CARA = ('ANGL_VRIL',),
+            VALE = (0,),
+
+        ),
+    )
+)
+
+# STEP: DEFINE GROUND BOUNDARY CONDITIONS
+grdSupps = AFFE_CHAR_MECA(
+    MODELE = model,
+    DDL_IMPO = (
+        _F(
+            GROUP_NO = 'Restraint001',
+            DX = 0,
+            DY = 0,
+            DZ = 0,
+            DRX = 0,
+            DRY = 0,
+            DRZ = 0,
+        ),
+    )
+)
+# STEP: DEFINE LOAD
+exPESA = AFFE_CHAR_MECA(
+    MODELE = model,
+    PESANTEUR = _F(
+        GRAVITE = 9.806,
+        DIRECTION = (0.,0.,-1.),
+    ),
+)
+
+# STEP: RUN ANALYSIS
+res_Bld = MECA_STATIQUE(
+    MODELE = model,
+    CHAM_MATER = material,
+    CARA_ELEM = element,
+    EXCIT = (
+        _F(
+            CHARGE = grdSupps,
+        ),
+        _F(
+            CHARGE = exPESA,
+        )
+    )
+)
+
+# STEP: DEFORMED SHAPE EXTRACTION
+IMPR_RESU(
+    FORMAT = 'MED',
+	UNITE = 80,
+	RESU = _F(
+ 		RESULTAT = res_Bld,
+ 		NOM_CHAM = ('DEPL',), # 'REAC_NODA', 'FORC_NODA',
+ 		NOM_CHAM_MED = ('Bld_DISP',), #  'Bld_REAC', 'Bld_FORC',
+    ),
+)
+
+# STEP: CONCLUDE STUDY
+FIN()

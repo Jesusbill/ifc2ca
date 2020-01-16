@@ -1,0 +1,50 @@
+{
+    "title": "Cantilever beam under its own weight",
+    "units": {
+        "length": "m",
+        "force": "kN",
+        "angle": "deg"
+    },
+    "elements": [
+        {
+            "name": "Beam001",
+            "geometryType": "straightLine",
+            "geometry": [
+                [0 , 0, 0],
+                [3, 0, 0]
+            ],
+            "rotation": 0,
+            "material": {
+                "materialType": "isotropic",
+                "E": 2.1e08,
+                "NU": 0.2,
+                "RHO": 7.8
+            },
+            "section": {
+                "sectionType": "rectangular",
+                "sectionVariation": "constant",
+                "HY": 0.2,
+                "HZ": 0.4
+            },
+            "elementType": "EulerBeam"
+        }
+    ],
+    "mesh": {
+        "meshSize": 0.2
+    },
+    "restraints": [
+        {
+            "name": "Restraint001",
+            "geometryType": "point",
+            "geometry": [0, 0, 0],
+            "input": {
+                "DX": true,
+                "DY": true,
+                "DZ": true,
+                "DRX": true,
+                "DRY": true,
+                "DRZ": true
+            }
+        }
+    ]
+}
