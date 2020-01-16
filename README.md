@@ -1,5 +1,5 @@
 # ifc2ca
-Files and scripts regarding the use of Code_Aster in IFC-driven FEM analyses within the ifcOpenShell/BlenderBim Project
+Files and scripts for a Proof of Concept regarding the use of Code_Aster in IFC-driven FEM analyses within the ifcOpenShell/BlenderBim Project
 
 ### File Organisation
 #### Scripts:
