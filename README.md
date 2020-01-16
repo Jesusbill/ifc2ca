@@ -6,7 +6,7 @@ Files and scripts regarding the use of Code_Aster in IFC-driven FEM analyses wit
 - [`scriptSalome.py`](scriptSalome.py): a python script to run in the Salome_Meca environment. Creates the geometry and the mesh of the structure
 - [`cliCodeAster.py`](cliCodeAster.py): a python cli to create the input file (`.comm`) for Code_Aster.
 
-#### Feasibility Study: A cantilever beam under its own weight
+#### Proof of Concept: A cantilever beam under its own weight
 ###### Input
 - [`inputDataCA.json`](inputDataCA.json): json data file of a cantilever beam under its own weight
 - [`bldMesh.med`](bldMesh.med): mesh file exported from Salome_Meca after executing `scriptSalome`
