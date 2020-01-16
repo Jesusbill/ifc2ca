@@ -17,6 +17,6 @@ Files and scripts regarding the use of Code_Aster in IFC-driven FEM analyses wit
 - [`result.rmed`](result.rmed): result file on the mesh of the structure to visualize in Salome_Meca
 
 ### Current Status
-- As of 16/01/20:
- - Only line geometries for structural elements and point geometries for restraints are considered
- - The structure is analysed for gravity loads with a single linear static analysis
+_As of 16/01/20:_
+- Only line geometries for structural elements and point geometries for restraints are considered
+- The structure is analysed for gravity loads with a single linear static analysis
