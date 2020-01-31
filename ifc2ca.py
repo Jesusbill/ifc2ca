@@ -167,7 +167,7 @@ class IFC2CA:
                 'yDim': profile.Profile.YDim
             }
 
-ifc2ca = IFC2CA('ifc2ca.blend.ifc')
+ifc2ca = IFC2CA('ifcModels/ifc2ca.blend.ifc')
 ifc2ca.convert()
 print(json.dumps(ifc2ca.result, indent=4))
 with open('ifc2ca.json', 'w') as f:
