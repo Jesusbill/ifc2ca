@@ -24,40 +24,28 @@ We define a single element in the `elements` Array with thte following propertie
 
 ```json
 {
-    "title": "My Model",
+    "title": "Cantilever beam under its own weight",
     "units": {
         "length": "m",
-        "force": "N",
+        "force": "kN",
         "angle": "deg"
     },
     "elements": [
         {
-            "ifcName": "IfcStructuralCurveMember|133",
-            "name": "My Beam",
-            "id": "0zncXJTUL98AfSMYRuKE89",
+            "name": "Beam001",
             "geometryType": "straightLine",
             "geometry": [
-                [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                [
-                    3.0,
-                    0.0,
-                    0.0
-                ]
+                [0 , 0, 0],
+                [3, 0, 0]
             ],
             "rotation": 0,
             "material": {
-                "ifcName": "IfcMaterial|95",
                 "materialType": "isotropic",
-                "youngModulus": 210000000.0,
+                "youngModulus": 2.1e08,
                 "poissonRatio": 0.2,
                 "massDensity": 7.8
             },
             "section": {
-                "ifcName": "IfcRectangleProfileDef|102",
                 "sectionType": "rectangular",
                 "sectionVariation": "constant",
                 "xDim": 0.2,
@@ -71,15 +59,9 @@ We define a single element in the `elements` Array with thte following propertie
     },
     "supports": [
         {
-            "ifcName": "IfcStructuralPointConnection|148",
-            "name": "Empty",
-            "id": "3McamcLqfFVfX$dKFdSJsP",
+            "name": "Support001",
             "geometryType": "point",
-            "geometry": [
-                0.0,
-                0.0,
-                0.0
-            ],
+            "geometry": [0, 0, 0],
             "appliedCondition": {
                 "dx": true,
                 "dy": true,
