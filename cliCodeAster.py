@@ -2,19 +2,15 @@ from __future__ import division
 import json
 import codecs
 
-FILENAME = r'/home/jesusbill/Dev-Projects/github.com/Jesusbill/ifc2ca/inputDataCA.json'
-# FILENAMESALOME = r'/media/jesusbill/DATA/Dropbox/Aether/Aetherium3/dataSalome.json'
+FILENAME = r'/home/jesusbill/Dev-Projects/github.com/Jesusbill/ifc2ca/ifc2ca.json'
 FILENAMEASTER = r'/home/jesusbill/Dev-Projects/github.com/Jesusbill/ifc2ca/CA_input_00.comm'
-# FILENAMEEXCEL = r'/media/jesusbill/DATA/Dropbox/Aether/Aetherium3/test01.xlsx'
-# FILENAME = r'D:\Dropbox\Aether\Aetherium3/data.json'
-# FILENAMESALOME = r'D:\Dropbox\Aether\Aetherium3/dataSalome.json'
-# FILENAMEASTER = r'D:\Dropbox\Aether\Aetherium3/CA_test01_input_02.comm'
-# FILENAMEEXCEL = r'D:\Dropbox\Aether\Aetherium3/test01.xlsx'
 
-
-###################################################################
-#######################     CONTAINER 4     #######################
-###################################################################
+def getGroupName(name):
+    if len(name) <= 24:
+        return name
+    else:
+        info = name.split('|')
+        return str(info[0][:24 - len(info[1]) - 1] + '_' + info[1])
 
 def createCommFile():
 
@@ -27,7 +23,7 @@ def createCommFile():
     units = data['units']
     elements = data['elements']
     mesh = data['mesh']
-    restraints = data['restraints']
+    supports = data['supports']
 
     buildElements_1D = []
     buildElements_1D.extend(elements)
@@ -91,18 +87,18 @@ model = AFFE_MODELE(
 '''
 {matNameID} = DEFI_MATERIAU(
     ELAS = _F(
-        E = {E},
-        NU = {NU},
-        RHO = {RHO}
+        E = {youngModulus},
+        NU = {poissonRatio},
+        RHO = {massDensity}
     )
 )
 '''
 
         context = {
             'matNameID': 'matF'+ '_%s' % i,
-            'E': float(elem['material']['E']),
-            'NU': float(elem['material']['NU']),
-            'RHO': float(elem['material']['RHO'])
+            'youngModulus': float(elem['material']['youngModulus']),
+            'poissonRatio': float(elem['material']['poissonRatio']),
+            'massDensity': float(elem['material']['massDensity'])
         }
 
         f.write(template.format(**context))
@@ -125,7 +121,7 @@ material = AFFE_MATERIAU(
         ),'''
 
         context = {
-            'group_name': str(elem['name']),
+            'group_name': getGroupName(str(elem['ifcName'])),
             'matNameID': 'matF'+ '_%s' % i
         }
 
@@ -160,8 +156,8 @@ element = AFFE_CARA_ELEM(
         ),'''
 
         context = {
-            'group_name': str(elem['name']),
-            'sectionDimensions': (elem['section']['HY'], elem['section']['HZ'])
+            'group_name': getGroupName(str(elem['ifcName'])),
+            'sectionDimensions': (elem['section']['xDim'], elem['section']['yDim'])
         }
 
         f.write(template.format(**context))
@@ -184,7 +180,7 @@ element = AFFE_CARA_ELEM(
         ),'''
 
         context = {
-            'group_name': str(elem['name']),
+            'group_name': getGroupName(str(elem['ifcName'])),
             'rotation': (elem['rotation'],)
         }
 
@@ -207,17 +203,17 @@ grdSupps = AFFE_CHAR_MECA(
     DDL_IMPO = ('''
     )
 
-    for i,restraint in enumerate(restraints):
+    for i,support in enumerate(supports):
         f.write(
         '''
         _F(
-            GROUP_NO = '%s',''' % (str(restraint['name']))
+            GROUP_NO = '%s',''' % getGroupName(str(support['ifcName']))
         )
-        for dof in restraint['input']:
-            if restraint['input'][dof]:
+        for dof in support['appliedCondition']:
+            if support['appliedCondition'][dof]:
                 f.write(
         '''
-            %s = 0,''' % (str(dof))
+            %s = 0,''' % (str(dof).upper())
                 )
         f.write(
         '''

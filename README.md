@@ -18,5 +18,5 @@ Files and scripts regarding the use of Code_Aster in IFC-driven FEM analyses wit
 
 ### Current Status
 _As of 16/01/20:_
-- Only line geometries for structural elements and point geometries for restraints are considered
+- Only line geometries for structural elements and point geometries for supports are considered
 - The structure is analysed for gravity loads with a single linear static analysis

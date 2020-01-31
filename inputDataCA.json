@@ -1,30 +1,42 @@
 {
-    "title": "Cantilever beam under its own weight",
+    "title": "My Model",
     "units": {
         "length": "m",
-        "force": "kN",
+        "force": "N",
         "angle": "deg"
     },
     "elements": [
         {
-            "name": "Beam001",
+            "ifcName": "IfcStructuralCurveMember|133",
+            "name": "My Beam",
+            "id": "0zncXJTUL98AfSMYRuKE89",
             "geometryType": "straightLine",
             "geometry": [
-                [0 , 0, 0],
-                [3, 0, 0]
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    3.0,
+                    0.0,
+                    0.0
+                ]
             ],
             "rotation": 0,
             "material": {
+                "ifcName": "IfcMaterial|95",
                 "materialType": "isotropic",
-                "E": 2.1e08,
-                "NU": 0.2,
-                "RHO": 7.8
+                "youngModulus": 210000000.0,
+                "poissonRatio": 0.2,
+                "massDensity": 7.8
             },
             "section": {
+                "ifcName": "IfcRectangleProfileDef|102",
                 "sectionType": "rectangular",
                 "sectionVariation": "constant",
-                "HY": 0.2,
-                "HZ": 0.4
+                "xDim": 0.2,
+                "yDim": 0.4
             },
             "elementType": "EulerBeam"
         }
@@ -32,18 +44,24 @@
     "mesh": {
         "meshSize": 0.2
     },
-    "restraints": [
+    "supports": [
         {
-            "name": "Restraint001",
+            "ifcName": "IfcStructuralPointConnection|148",
+            "name": "Empty",
+            "id": "3McamcLqfFVfX$dKFdSJsP",
             "geometryType": "point",
-            "geometry": [0, 0, 0],
-            "input": {
-                "DX": true,
-                "DY": true,
-                "DZ": true,
-                "DRX": true,
-                "DRY": true,
-                "DRZ": true
+            "geometry": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "appliedCondition": {
+                "dx": true,
+                "dy": true,
+                "dz": true,
+                "drx": true,
+                "dry": true,
+                "drz": true
             }
         }
     ]

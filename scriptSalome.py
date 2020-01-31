@@ -12,7 +12,7 @@ import salome_notebook
 #                             'Salome Script - Choose File', '.',
 #                             'Json Data File (*.json)')
 
-FILENAME = r'/home/jesusbill/Dev-Projects/github.com/Jesusbill/ifc2ca/inputDataCA.json'
+FILENAME = r'/home/jesusbill/Dev-Projects/github.com/Jesusbill/ifc2ca/ifc2ca.json'
 # FILENAMESALOME = r'/home/jesusbill/Dev-Projects/github.com/Jesusbill/ifc2ca/inputDataCA_Salome.json'
 
 # Read data from input file
@@ -22,7 +22,7 @@ with open(FILENAME) as dataFile:
 units = data['units']
 elements = data['elements']
 mesh = data['mesh']
-restraints = data['restraints']
+supports = data['supports']
 
 meshSize = mesh['meshSize']
 
@@ -53,6 +53,13 @@ def makePoint(pl):
 
     (x, y, z) = pl
     return geompy.MakeVertex(x, y, z)
+
+def getGroupName(name):
+    if len(name) <= 24:
+        return name
+    else:
+        info = name.split('|')
+        return str(info[0][:24 - len(info[1]) - 1] + '_' + info[1])
 
 #####################################################
 
@@ -92,17 +99,17 @@ lineObjs = [None for _ in range(len(buildElements_1D))]
 for i,line in enumerate(buildElements_1D):
     # Make line
     lineObjs[i] = makeLine(line['geometry'])
-    geompy.addToStudy(lineObjs[i], str(line['name']))
+    geompy.addToStudy(lineObjs[i], getGroupName(str(line['ifcName'])))
 
 lineSetObj = geompy.MakePartition(lineObjs, [], [], [], geompy.ShapeType["EDGE"], 0, [], 1)
 geompy.addToStudy(lineSetObj, 'lines')
 
-pointObjs = [None for _ in range(len(restraints))]
+pointObjs = [None for _ in range(len(supports))]
 # For each straightLine object
-for i,point in enumerate(restraints):
+for i,point in enumerate(supports):
     # Make point
     pointObjs[i] = makePoint(point['geometry'])
-    geompy.addToStudy(pointObjs[i], str(point['name']))
+    geompy.addToStudy(pointObjs[i], getGroupName(str(point['ifcName'])))
 
 # pointSetObj = geompy.MakePartition(pointObjs, [], [], [], geompy.ShapeType["EDGE"], 0, [], 1)
 # geompy.addToStudy(pointSetObj, 'points')
@@ -122,12 +129,12 @@ print ('Building Geometry Defined in %g sec' % (elapsed_time))
 for i,line in enumerate(buildElements_1D):
     # Make line
     lineObjs[i] = geompy.GetInPlace(bldComp, lineObjs[i])
-    geompy.addToStudyInFather(bldComp, lineObjs[i], str(line['name']))
+    geompy.addToStudyInFather(bldComp, lineObjs[i], getGroupName(str(line['ifcName'])))
 
-for i,point in enumerate(restraints):
+for i,point in enumerate(supports):
     # Make point
     pointObjs[i] = geompy.GetInPlace(bldComp, pointObjs[i])
-    geompy.addToStudyInFather(bldComp, pointObjs[i], str(point['name']))
+    geompy.addToStudyInFather(bldComp, pointObjs[i], getGroupName(str(point['ifcName'])))
 
 lineSetObj = geompy.GetInPlace(bldComp, lineSetObj)
 geompy.addToStudyInFather(bldComp, lineSetObj, 'lines')
@@ -172,12 +179,12 @@ print ('Meshing Operations Completed in %g sec' % (elapsed_time))
 # Define groups in Mesh
 
 for i,line in enumerate(buildElements_1D):
-    tempgroup = Mesh_1.GroupOnGeom(lineObjs[i], str(line['name']), SMESH.EDGE)
-    smesh.SetName(tempgroup, str(line['name']))
+    tempgroup = Mesh_1.GroupOnGeom(lineObjs[i], getGroupName(str(line['ifcName'])), SMESH.EDGE)
+    smesh.SetName(tempgroup, getGroupName(str(line['ifcName'])))
 
-for i,point in enumerate(restraints):
-    tempgroup = Mesh_1.GroupOnGeom(pointObjs[i], str(point['name']), SMESH.NODE)
-    smesh.SetName(tempgroup, str(point['name']))
+for i,point in enumerate(supports):
+    tempgroup = Mesh_1.GroupOnGeom(pointObjs[i], getGroupName(str(point['ifcName'])), SMESH.NODE)
+    smesh.SetName(tempgroup, getGroupName(str(point['ifcName'])))
 
 tempgroup = Mesh_1.GroupOnGeom(lineSetObj, 'lines', SMESH.EDGE)
 smesh.SetName(tempgroup, 'lines')
@@ -192,28 +199,3 @@ if salome.sg.hasDesktop():
 
 elapsed_time = init_time - start_time
 print ('ALL Operations Completed in %g sec' % (elapsed_time))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-##

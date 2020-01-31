@@ -9,47 +9,59 @@ We define a single element in the `elements` Array with thte following propertie
  - Y local axis is defined as the horizontal axis perpendicular to X
  - Z local axis completes the triad
 - `material`: properties of an isotropic material
- - `E`: modulus of elasticity [kPa]
- - `NU`: poisson ratio [-]
- - `RHO`: density [ton/m3]
+ - `youngModulus`: modulus of elasticity [kPa]
+ - `poissonRatio`: poisson ratio [-]
+ - `massDensity`: density [ton/m3]
 - `section`: properties of a rectangular section
- - `HY`: length along the Y local axis [m]
- - `HZ`: length along the Z local axis [m]
+ - `xDim`: length along the Y local axis in Code_Aster [m]
+ - `yDim`: length along the Z local axis in Code_Aster [m]
  - `sectionVariation`: `constant` section along the length of the element
 - `meshSize`: discretization length of the geometry [m]
-- `restraints`: an Array of objects to define the supports of the structure
+- `supports`: an Array of objects to define the supports of the structure
  - `geometryType`: `point` geometry
  - `geometry`: the 3D point coordinates [m]
- - `input`: imposed directions (degrees-of-freedom) where there is no displacement/rotation allowed. In this example we restraint all displacements and directions of the first point of the beam
+ - `appliedCondition`: imposed directions (degrees-of-freedom) where there is no displacement/rotation allowed. In this example we support all displacements and directions of the first point of the beam
 
 ```json
 {
-    "title": "Cantilever beam under its own weight",
+    "title": "My Model",
     "units": {
         "length": "m",
-        "force": "kN",
+        "force": "N",
         "angle": "deg"
     },
     "elements": [
         {
-            "name": "Beam001",
+            "ifcName": "IfcStructuralCurveMember|133",
+            "name": "My Beam",
+            "id": "0zncXJTUL98AfSMYRuKE89",
             "geometryType": "straightLine",
             "geometry": [
-                [0 , 0, 0],
-                [3, 0, 0]
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    3.0,
+                    0.0,
+                    0.0
+                ]
             ],
             "rotation": 0,
             "material": {
+                "ifcName": "IfcMaterial|95",
                 "materialType": "isotropic",
-                "E": 2.1e08,
-                "NU": 0.2,
-                "RHO": 7.8
+                "youngModulus": 210000000.0,
+                "poissonRatio": 0.2,
+                "massDensity": 7.8
             },
             "section": {
+                "ifcName": "IfcRectangleProfileDef|102",
                 "sectionType": "rectangular",
                 "sectionVariation": "constant",
-                "HY": 0.2,
-                "HZ": 0.4
+                "xDim": 0.2,
+                "yDim": 0.4
             },
             "elementType": "EulerBeam"
         }
@@ -57,18 +69,24 @@ We define a single element in the `elements` Array with thte following propertie
     "mesh": {
         "meshSize": 0.2
     },
-    "restraints": [
+    "supports": [
         {
-            "name": "Restraint001",
+            "ifcName": "IfcStructuralPointConnection|148",
+            "name": "Empty",
+            "id": "3McamcLqfFVfX$dKFdSJsP",
             "geometryType": "point",
-            "geometry": [0, 0, 0],
-            "input": {
-                "DX": true,
-                "DY": true,
-                "DZ": true,
-                "DRX": true,
-                "DRY": true,
-                "DRZ": true
+            "geometry": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "appliedCondition": {
+                "dx": true,
+                "dy": true,
+                "dz": true,
+                "drx": true,
+                "dry": true,
+                "drz": true
             }
         }
     ]

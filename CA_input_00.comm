@@ -43,7 +43,7 @@ material = AFFE_MATERIAU(
     MAILLAGE = mesh,
     AFFE = (
         _F(
-            GROUP_MA = 'Beam001',
+            GROUP_MA = 'IfcStructuralCurveMe_133',
             MATER = matF_0,
         ),
     )
@@ -54,7 +54,7 @@ element = AFFE_CARA_ELEM(
     MODELE = model,
     POUTRE = (
         _F(
-            GROUP_MA = 'Beam001',
+            GROUP_MA = 'IfcStructuralCurveMe_133',
             SECTION = 'RECTANGLE',
             CARA = ('HY', 'HZ'),
             VALE = (0.2, 0.4)
@@ -63,7 +63,7 @@ element = AFFE_CARA_ELEM(
     ),
     ORIENTATION = (
         _F(
-            GROUP_MA = 'Beam001',
+            GROUP_MA = 'IfcStructuralCurveMe_133',
             CARA = ('ANGL_VRIL',),
             VALE = (0,),
 
@@ -76,7 +76,7 @@ grdSupps = AFFE_CHAR_MECA(
     MODELE = model,
     DDL_IMPO = (
         _F(
-            GROUP_NO = 'Restraint001',
+            GROUP_NO = 'IfcStructuralPointCo_148',
             DX = 0,
             DY = 0,
             DZ = 0,
