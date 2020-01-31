@@ -46,7 +46,7 @@ material = AFFE_MATERIAU(
     MAILLAGE = mesh,
     AFFE = (
         _F(
-            GROUP_MA = 'Beam001',
+            GROUP_MA = 'IfcStructuralCurveMe_133',
             MATER = matF_0,
         ),
     )
@@ -57,7 +57,7 @@ element = AFFE_CARA_ELEM(
     MODELE = model,
     POUTRE = (
         _F(
-            GROUP_MA = 'Beam001',
+            GROUP_MA = 'IfcStructuralCurveMe_133',
             SECTION = 'RECTANGLE',
             CARA = ('HY', 'HZ'),
             VALE = (0.2, 0.4)
@@ -66,7 +66,7 @@ element = AFFE_CARA_ELEM(
     ),
     ORIENTATION = (
         _F(
-            GROUP_MA = 'Beam001',
+            GROUP_MA = 'IfcStructuralCurveMe_133',
             CARA = ('ANGL_VRIL',),
             VALE = (0,),
 
@@ -79,7 +79,7 @@ grdSupps = AFFE_CHAR_MECA(
     MODELE = model,
     DDL_IMPO = (
         _F(
-            GROUP_NO = 'Restraint001',
+            GROUP_NO = 'IfcStructuralPointCo_148',
             DX = 0,
             DY = 0,
             DZ = 0,
@@ -140,11 +140,11 @@ FIN()
                      révision 1c8fb830180c - branche 'v13'                      
                          Copyright EDF R&D 1991 - 2020                          
                                                                                 
-                    Exécution du : Thu Jan 16 14:00:12 2020                     
+                    Exécution du : Fri Jan 31 16:10:03 2020                     
                      Nom de la machine : Ubuntu-ThinkPad-P1                     
                               Architecture : 64bit                              
                           Type de processeur : x86_64                           
-       Système d'exploitation : Linux debian buster/sid  5.3.0-26-generic       
+       Système d'exploitation : Linux debian buster/sid  5.3.0-29-generic       
                         Langue des messages : en (UTF-8)                        
                                                                                 
                            Version de Python : 2.7.10                           
@@ -160,8 +160,8 @@ FIN()
                      Version de la librairie SCOTCH : 6.0.4                     
 
                   Mémoire limite pour l'exécution : 5632.00 Mo                  
-                   consommée par l'initialisation : 631.61 Mo                   
-                  par les objets du jeu de commandes : 1.97 Mo                  
+                   consommée par l'initialisation : 631.58 Mo                   
+                  par les objets du jeu de commandes : 2.00 Mo                  
                  reste pour l'allocation dynamique : 4998.29 Mo                 
                 Taille limite des fichiers d'échange : 48.00 Go                 
                                                                                 
@@ -228,9 +228,9 @@ FIN()
 
   Relecture des catalogues des éléments faite.
 
-  Fin de lecture (durée  0.042513  s.) 
-  # Mémoire (Mo) :   678.99 /   671.14 /    44.65 /    23.15 (VmPeak / VmSize / Optimum / Minimum)
-  # Fin commande No : 0001   user+syst:        0.03s (syst:        0.00s, elaps:        0.05s)
+  Fin de lecture (durée  0.020486  s.) 
+  # Mémoire (Mo) :   678.91 /   671.20 /    44.65 /    23.15 (VmPeak / VmSize / Optimum / Minimum)
+  # Fin commande No : 0001   user+syst:        0.03s (syst:        0.01s, elaps:        0.04s)
   # ------------------------------------------------------------------------------------------
 
 .. __stg1_txt13
@@ -249,7 +249,7 @@ Vérification du maillage.
 
 ------------ MAILLAGE mesh     - IMPRESSIONS NIVEAU  1 ------------
 
-JE-16-JANV-2020 14:00:12                                                        
+VE-31-JANV-2020 16:10:03                                                        
 
 NOMBRE DE NOEUDS                          16
 
@@ -257,16 +257,16 @@ NOMBRE DE MAILLES                         15
                               SEG2                   15
 
 NOMBRE DE GROUPES DE NOEUDS                1
-                              Restraint001                         1
+                              IfcStructuralPointCo_148             1
 
 NOMBRE DE GROUPES DE MAILLES               2
-                              Beam001                             15
+                              IfcStructuralCurveMe_133            15
                               lines                               15
 
 --------------------------------------------------------------------------------
 
-  # Mémoire (Mo) :   678.99 /   671.81 /    44.65 /    23.15 (VmPeak / VmSize / Optimum / Minimum)
-  # Fin commande No : 0002   user+syst:        0.01s (syst:        0.01s, elaps:        0.01s)
+  # Mémoire (Mo) :   678.91 /   671.86 /    44.65 /    23.15 (VmPeak / VmSize / Optimum / Minimum)
+  # Fin commande No : 0002   user+syst:        0.00s (syst:        0.00s, elaps:        0.00s)
   # ------------------------------------------------------------------------------------------
 
 .. __stg1_txt28
@@ -292,8 +292,8 @@ Sur les 15 mailles du maillage mesh, on a demandé l'affectation de 15, on a pu 
  Modélisation     Type maille  Élément fini     Nombre
  POU_D_E          SEG2         MECA_POU_D_E     15
 #2      Calculs elementaires et assemblages               CPU (USER+SYST/SYST/ELAPS):      0.00      0.00      0.00
-  # Mémoire (Mo) :   713.17 /   713.17 /    44.65 /    33.90 (VmPeak / VmSize / Optimum / Minimum)
-  # Fin commande No : 0003   user+syst:        0.02s (syst:        0.00s, elaps:        0.01s)
+  # Mémoire (Mo) :   713.23 /   713.23 /    44.65 /    33.90 (VmPeak / VmSize / Optimum / Minimum)
+  # Fin commande No : 0003   user+syst:        0.02s (syst:        0.01s, elaps:        0.01s)
   # ------------------------------------------------------------------------------------------
 
 .. __stg1_txt38
@@ -311,8 +311,8 @@ Sur les 15 mailles du maillage mesh, on a demandé l'affectation de 15, on a pu 
  RELATION DE COMPORTEMENT: ELAS                            
 
 
-  # Mémoire (Mo) :   713.17 /   713.17 /    44.65 /    33.90 (VmPeak / VmSize / Optimum / Minimum)
-  # Fin commande No : 0004   user+syst:        0.02s (syst:        0.01s, elaps:        0.00s)
+  # Mémoire (Mo) :   713.23 /   713.23 /    44.65 /    33.90 (VmPeak / VmSize / Optimum / Minimum)
+  # Fin commande No : 0004   user+syst:        0.01s (syst:        0.00s, elaps:        0.00s)
   # ------------------------------------------------------------------------------------------
 
 .. __stg1_txt47
@@ -321,12 +321,12 @@ Sur les 15 mailles du maillage mesh, on a demandé l'affectation de 15, on a pu 
   # ------------------------------------------------------------------------------------------
   material = AFFE_MATERIAU(MAILLAGE=mesh,
                            AFFE=_F(MATER=(matF_0, ),
-                                   GROUP_MA=('Beam001', ),),
+                                   GROUP_MA=('IfcStructuralCurveMe_133', ),),
                            INFO=1,
                            )
 
-  # Mémoire (Mo) :   713.17 /   713.17 /    44.65 /    33.90 (VmPeak / VmSize / Optimum / Minimum)
-  # Fin commande No : 0005   user+syst:        0.02s (syst:        0.01s, elaps:        0.01s)
+  # Mémoire (Mo) :   713.23 /   713.23 /    44.65 /    33.90 (VmPeak / VmSize / Optimum / Minimum)
+  # Fin commande No : 0005   user+syst:        0.05s (syst:        0.00s, elaps:        0.01s)
   # ------------------------------------------------------------------------------------------
 
 .. __stg1_txt68
@@ -335,12 +335,12 @@ Sur les 15 mailles du maillage mesh, on a demandé l'affectation de 15, on a pu 
   # ------------------------------------------------------------------------------------------
   element = AFFE_CARA_ELEM(MODELE=model,
                            POUTRE=_F(SECTION='RECTANGLE',
-                                     GROUP_MA=('Beam001', ),
+                                     GROUP_MA=('IfcStructuralCurveMe_133', ),
                                      CARA=('HY', 'HZ'),
                                      VALE=(0.2, 0.4),
                                      VARI_SECT='CONSTANT',),
                            ORIENTATION=_F(CARA='ANGL_VRIL',
-                                          GROUP_MA=('Beam001', ),
+                                          GROUP_MA=('IfcStructuralCurveMe_133', ),
                                           VALE=0,),
                            INFO=1,)
 
@@ -348,8 +348,8 @@ Sur les 15 mailles du maillage mesh, on a demandé l'affectation de 15, on a pu 
      LE MODELE model    CONTIENT : 
                                        15 ELEMENT(S) POUTRE          
 #2      Calculs elementaires et assemblages               CPU (USER+SYST/SYST/ELAPS):      0.00      0.00      0.00
-  # Mémoire (Mo) :   713.82 /   713.82 /    44.65 /    33.90 (VmPeak / VmSize / Optimum / Minimum)
-  # Fin commande No : 0006   user+syst:        0.10s (syst:        0.05s, elaps:        0.02s)
+  # Mémoire (Mo) :   713.89 /   713.89 /    44.65 /    33.90 (VmPeak / VmSize / Optimum / Minimum)
+  # Fin commande No : 0006   user+syst:        0.06s (syst:        0.03s, elaps:        0.01s)
   # ------------------------------------------------------------------------------------------
 
 .. __stg1_txt85
@@ -360,15 +360,15 @@ Sur les 15 mailles du maillage mesh, on a demandé l'affectation de 15, on a pu 
                             DDL_IMPO=_F(DRY=0,
                                         DRX=0,
                                         DRZ=0,
-                                        GROUP_NO=('Restraint001', ),
+                                        GROUP_NO=('IfcStructuralPointCo_148', ),
                                         DZ=0,
                                         DX=0,
                                         DY=0,),
                             INFO=1,
                             VERI_NORM='OUI',)
 
-  # Mémoire (Mo) :   714.06 /   713.82 /    44.65 /    33.90 (VmPeak / VmSize / Optimum / Minimum)
-  # Fin commande No : 0008   user+syst:        0.05s (syst:        0.02s, elaps:        0.01s)
+  # Mémoire (Mo) :   714.06 /   713.89 /    44.65 /    33.90 (VmPeak / VmSize / Optimum / Minimum)
+  # Fin commande No : 0008   user+syst:        0.02s (syst:        0.00s, elaps:        0.00s)
   # ------------------------------------------------------------------------------------------
 
 .. __stg1_txt94
@@ -381,8 +381,8 @@ Sur les 15 mailles du maillage mesh, on a demandé l'affectation de 15, on a pu 
                           INFO=1,
                           VERI_NORM='OUI',)
 
-  # Mémoire (Mo) :   714.06 /   713.82 /    44.65 /    33.90 (VmPeak / VmSize / Optimum / Minimum)
-  # Fin commande No : 0009   user+syst:        0.02s (syst:        0.02s, elaps:        0.00s)
+  # Mémoire (Mo) :   714.06 /   713.89 /    44.65 /    33.90 (VmPeak / VmSize / Optimum / Minimum)
+  # Fin commande No : 0009   user+syst:        0.01s (syst:        0.00s, elaps:        0.01s)
   # ------------------------------------------------------------------------------------------
 
 .. __stg1_txt108
@@ -417,10 +417,10 @@ La matrice est de taille 108 équations.
 Elle contient 966 termes non nuls si elle est symétrique et 1824 termes non nuls si elle n'est pas symétrique.
 Soit un taux de remplissage de  15.638 %.
     Champ stocké <DEPL> à l'instant  0.000000000000e+00 pour le numéro d'ordre 1
-#1      Resolution des systemes lineaires                 CPU (USER+SYST/SYST/ELAPS):      0.02      0.01      0.01
-#2      Calculs elementaires et assemblages               CPU (USER+SYST/SYST/ELAPS):      0.03      0.01      0.00
-  # Mémoire (Mo) :   758.48 /   757.63 /    44.65 /    33.90 (VmPeak / VmSize / Optimum / Minimum)
-  # Fin commande No : 0010   user+syst:        0.18s (syst:        0.07s, elaps:        0.03s)
+#1      Resolution des systemes lineaires                 CPU (USER+SYST/SYST/ELAPS):      0.03      0.02      0.01
+#2      Calculs elementaires et assemblages               CPU (USER+SYST/SYST/ELAPS):      0.02      0.01      0.00
+  # Mémoire (Mo) :   758.44 /   757.59 /    44.65 /    33.90 (VmPeak / VmSize / Optimum / Minimum)
+  # Fin commande No : 0010   user+syst:        0.17s (syst:        0.06s, elaps:        0.02s)
   # ------------------------------------------------------------------------------------------
 
 .. __stg1_txt120
@@ -437,8 +437,8 @@ Soit un taux de remplissage de  15.638 %.
             INFO=1,
             PROC0='OUI',)
 
-  # Mémoire (Mo) :   758.48 /   757.63 /    44.65 /    33.90 (VmPeak / VmSize / Optimum / Minimum)
-  # Fin commande No : 0011   user+syst:        0.17s (syst:        0.05s, elaps:        0.01s)
+  # Mémoire (Mo) :   758.44 /   757.59 /    44.65 /    33.90 (VmPeak / VmSize / Optimum / Minimum)
+  # Fin commande No : 0011   user+syst:        0.10s (syst:        0.02s, elaps:        0.01s)
   # ------------------------------------------------------------------------------------------
 
 .. __stg1_txt125
@@ -541,7 +541,7 @@ Soit un taux de remplissage de  15.638 %.
  <I> <FIN> ARRET NORMAL DANS "FIN" PAR APPEL A "JEFINI".
 
  La mémoire demandée au lancement est surestimée, elle est de 5632.00 Mo.
- Le pic mémoire utilisée est de 758.48 Mo.
+ Le pic mémoire utilisée est de 758.44 Mo.
 
 
 
@@ -559,7 +559,7 @@ Soit un taux de remplissage de  15.638 %.
   
  <I> <FIN> MEMOIRE JEVEUX MINIMALE REQUISE POUR L'EXECUTION :                      33.90 Mo
  <I> <FIN> MEMOIRE JEVEUX OPTIMALE REQUISE POUR L'EXECUTION :                      44.65 Mo
- <I> <FIN> MAXIMUM DE MEMOIRE UTILISEE PAR LE PROCESSUS LORS DE L'EXECUTION :     758.48 Mo
+ <I> <FIN> MAXIMUM DE MEMOIRE UTILISEE PAR LE PROCESSUS LORS DE L'EXECUTION :     758.44 Mo
   
  <I>       FERMETURE DES BASES EFFECTUEE
   
@@ -579,46 +579,46 @@ Soit un taux de remplissage de  15.638 %.
    MEMOIRE JEVEUX OPTIMALE REQUISE POUR L'EXECUTION :      44.65 Mo
      - LIMITE LES ACCES DISQUE
      - AMELIORE LA VITESSE D'EXECUTION
-   MAXIMUM DE MEMOIRE UTILISEE PAR LE PROCESSUS     :     758.48 Mo
+   MAXIMUM DE MEMOIRE UTILISEE PAR LE PROCESSUS     :     758.44 Mo
      - COMPREND LA MEMOIRE CONSOMMEE PAR  JEVEUX, 
        LE SUPERVISEUR PYTHON, LES LIBRAIRIES EXTERNES
   
- <I>       FIN D'EXECUTION LE : JE-16-JANV-2020 14:00:12
+ <I>       FIN D'EXECUTION LE : VE-31-JANV-2020 16:10:03
 
 
   <I> Informations sur les temps d'exécution
-      Temps cpu user total                    0.83 s
-      Temps cpu systeme total                 0.42 s
-      Temps elapsed total                     0.65 s
-      Temps restant                         809.35 s
+      Temps cpu user total                    0.79 s
+      Temps cpu systeme total                 0.28 s
+      Temps elapsed total                     0.52 s
+      Temps restant                         809.48 s
 
 
   La signature de la base sauvegardée est (à l'adresse 0) :
-    35d728178a433470b751e3b31797515f4c206b83
+    0ff3f9b873d981932658aca1a55b9f939f9f9c67
 
  ********************************************************************************
  * COMMAND                  :       USER :     SYSTEM :   USER+SYS :    ELAPSED *
  ********************************************************************************
- * init (jdc)               :       0.33 :       0.05 :       0.38 :       0.44 *
+ * init (jdc)               :       0.32 :       0.05 :       0.37 :       0.38 *
  *  . compile               :       0.00 :       0.00 :       0.00 :       0.00 *
- *  . exec_compile          :       0.02 :       0.00 :       0.02 :       0.05 *
- *  . report                :       0.01 :       0.00 :       0.01 :       0.00 *
+ *  . exec_compile          :       0.03 :       0.00 :       0.03 :       0.03 *
+ *  . report                :       0.00 :       0.00 :       0.00 :       0.01 *
  *  . build                 :       0.00 :       0.00 :       0.00 :       0.00 *
- * DEBUT                    :       0.03 :       0.00 :       0.03 :       0.05 *
- * LIRE_MAILLAGE            :       0.00 :       0.01 :       0.01 :       0.01 *
- * AFFE_MODELE              :       0.02 :       0.00 :       0.02 :       0.01 *
- * DEFI_MATERIAU            :       0.01 :       0.01 :       0.02 :       0.00 *
- * AFFE_MATERIAU            :       0.01 :       0.01 :       0.02 :       0.01 *
- * AFFE_CARA_ELEM           :       0.05 :       0.05 :       0.10 :       0.02 *
- * AFFE_CHAR_MECA           :       0.03 :       0.02 :       0.05 :       0.01 *
- * AFFE_CHAR_MECA           :       0.00 :       0.02 :       0.02 :       0.00 *
- * MECA_STATIQUE            :       0.11 :       0.07 :       0.18 :       0.03 *
- * IMPR_RESU                :       0.12 :       0.05 :       0.17 :       0.01 *
- * FIN                      :       0.11 :       0.10 :       0.21 :       0.05 *
- *  . part Superviseur      :       0.40 :       0.09 :       0.49 :       0.52 *
- *  . part Fortran          :       0.43 :       0.32 :       0.75 :       0.14 *
+ * DEBUT                    :       0.02 :       0.01 :       0.03 :       0.04 *
+ * LIRE_MAILLAGE            :       0.00 :       0.00 :       0.00 :       0.00 *
+ * AFFE_MODELE              :       0.01 :       0.01 :       0.02 :       0.01 *
+ * DEFI_MATERIAU            :       0.01 :       0.00 :       0.01 :       0.00 *
+ * AFFE_MATERIAU            :       0.05 :       0.00 :       0.05 :       0.01 *
+ * AFFE_CARA_ELEM           :       0.03 :       0.03 :       0.06 :       0.01 *
+ * AFFE_CHAR_MECA           :       0.02 :       0.00 :       0.02 :       0.00 *
+ * AFFE_CHAR_MECA           :       0.01 :       0.00 :       0.01 :       0.01 *
+ * MECA_STATIQUE            :       0.11 :       0.06 :       0.17 :       0.02 *
+ * IMPR_RESU                :       0.08 :       0.02 :       0.10 :       0.01 *
+ * FIN                      :       0.16 :       0.12 :       0.28 :       0.04 *
+ *  . part Superviseur      :       0.42 :       0.07 :       0.49 :       0.42 *
+ *  . part Fortran          :       0.42 :       0.24 :       0.66 :       0.11 *
  ********************************************************************************
- * TOTAL_JOB                :       0.83 :       0.42 :       1.25 :       0.65 *
+ * TOTAL_JOB                :       0.79 :       0.28 :       1.07 :       0.52 *
  ********************************************************************************
 
-EXECUTION_CODE_ASTER_EXIT_25602-Ubuntu-ThinkPad-P1=0
+EXECUTION_CODE_ASTER_EXIT_2797-Ubuntu-ThinkPad-P1=0
