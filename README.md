@@ -3,6 +3,7 @@ Files and scripts for a Proof of Concept regarding the use of Code_Aster in IFC-
 
 ### File Organisation
 #### Scripts:
+- [`ifc2ca.py`](ifc2ca.py): a python script to extract and create the `json` file from an `ifc` file. This file will be synchronized with the one in [`BlenderBIM`](https://github.com/IfcOpenShell/IfcOpenShell/tree/v0.6.0/src/ifcblenderexport)
 - [`scriptSalome.py`](scriptSalome.py): a python script to run in the Salome_Meca environment. Creates the geometry and the mesh of the structure
 - [`cliCodeAster.py`](cliCodeAster.py): a python cli to create the input file (`.comm`) for Code_Aster. Use `run.py` to facilitate the use
 
