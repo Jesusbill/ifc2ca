@@ -3,7 +3,7 @@ Files and scripts for a Proof of Concept regarding the use of Code_Aster in IFC-
 
 ### File Organisation
 #### Scripts:
-- [`ifc2ca.py`](ifc2ca.py): a python script to extract and create the `json` file from an `ifc` file. This file will be synchronized with the one in [`BlenderBIM`](https://github.com/IfcOpenShell/IfcOpenShell/tree/v0.6.0/src/ifcblenderexport)
+- [`ifc2ca.py`](ifc2ca.py): a python script to extract and create the `json` file from an `ifc` file. This file will be synchronized with the one in [`BlenderBIM`](https://github.com/IfcOpenShell/IfcOpenShell/tree/v0.6.0/src/ifcblenderexport/ifc2ca.py)
 - [`scriptSalome.py`](scriptSalome.py): a python script to run in the Salome_Meca environment. Creates the geometry and the mesh of the structure
 - [`cliCodeAster.py`](cliCodeAster.py): a python cli to create the input file (`.comm`) for Code_Aster. Use `run.py` to facilitate the use
 
@@ -18,6 +18,24 @@ Files and scripts for a Proof of Concept regarding the use of Code_Aster in IFC-
 - [`result.rmed`](CodeAsterModel-CantileverBeam/result.rmed): result file on the mesh of the structure to visualize in Salome_Meca
 
 ### Current Status
+_As of 09/02/20:_
+- Loads, load cases and load case combinations added in the example `inputDataCA.json` file
+- Implementation in BlenderBIM under way
+
+ ![note](CodeAsterModel-CantileverBeam/cantileverBeamProblemDescription.png)
+
 _As of 16/01/20:_
 - Only line geometries for structural elements and point geometries for supports are considered
 - The structure is analysed for gravity loads with a single linear static analysis
+
+ Running `scriptSalome.py` in _salome_meca_. View of Geometry and Mesh
+ ![note](CodeAsterModel-CantileverBeam/CA_1.png)
+
+ Importing the command file in _asterStudy_, the module with the UI to configure and run analyses with Code_Aster
+ ![note](CodeAsterModel-CantileverBeam/CA_2.png)
+
+ Running the analysis always in _asterStudy_. Green light designates a successful execution
+ ![note](CodeAsterModel-CantileverBeam/CA_3.png)
+
+ Viewing the results in _ParaViS_, the port of ParaView in the ecosystem
+ ![note](CodeAsterModel-CantileverBeam/CA_4.png)

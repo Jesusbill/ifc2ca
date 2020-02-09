@@ -21,6 +21,15 @@ We define a single element in the `elements` Array with thte following propertie
  - `geometryType`: `point` geometry
  - `geometry`: the 3D point coordinates [m]
  - `appliedCondition`: imposed directions (degrees-of-freedom) where there is no displacement/rotation allowed. In this example we support all displacements and directions of the first point of the beam
+- `loads`: An Array of loads applied on the structure
+  - `fx`/`fy`/`fz`: force in x, y, z global directions
+  - `mx`/`my`/`mz`: moment in x, y, z global directions
+- `loadCases`: An Array of load cases, which are groups of loads within the same condition (i.e. permanent, accidental, seismic, etc)
+  - `load`: reference to the load (load id)
+  - `multiplier`: multiplier of the load in the load case
+- `loadCaseCombinations`: An Array of load case combinations, which are groups of load cases
+  - `loadCase`: reference to the load case (load case id)
+  - `multiplier`: multiplier of the load case in the load case combination
 
 ```json
 {
@@ -70,6 +79,72 @@ We define a single element in the `elements` Array with thte following propertie
                 "dry": true,
                 "drz": true
             }
+        }
+    ],
+    "loads": [
+        {
+            "name": "Load001",
+            "geometryType": "straightLine",
+            "geometry": [
+                [0 , 0, 0],
+                [3, 0, 0]
+            ],
+            "appliedLoad": {
+                "fx": 0,
+                "fy": 0,
+                "fz": -2,
+                "mx": 0,
+                "mx": 0,
+                "mx": 0
+            }
+        },
+        {
+            "name": "Load002",
+            "geometryType": "point",
+            "geometry": [2, 0, 0],
+            "appliedLoad": {
+                "fx": 0,
+                "fy": 0,
+                "fz": -5,
+                "mx": 0,
+                "mx": 0,
+                "mx": 0
+            }
+        }
+    ],
+    "loadCases": [
+        {
+            "name": "LoadCase001",
+            "loads": [
+                {
+                    "load": "Load001",
+                    "multiplier": 1
+                }
+            ]
+        },
+        {
+            "name": "LoadCase002",
+            "loads": [
+                {
+                    "load": "Load002",
+                    "multiplier": 1
+                }
+            ]
+        }
+    ],
+    "loadCaseCombinations": [
+        {
+            "name": "LoadCaseCombination001",
+            "loadCases": [
+                {
+                    "loadCase": "LoadCase001",
+                    "multiplier": 1.3
+                },
+                {
+                    "loadCase": "LoadCase002",
+                    "multiplier": 1.5
+                }
+            ]
         }
     ]
 }
