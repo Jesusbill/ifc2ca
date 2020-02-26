@@ -26,15 +26,18 @@
             "rotation": 0,
             "material": {
                 "ifcName": "IfcMaterial|95",
-                "materialType": "isotropic",
-                "youngModulus": 210000000.0,
-                "poissonRatio": 0.2,
-                "massDensity": 7.8
+                "mechProps": {
+                    "youngModulus": 210000000.0,
+                    "poissonRatio": 0.2
+                },
+                "commonProps": {
+                    "massDensity": 7.8
+                }
             },
-            "section": {
+            "profile": {
                 "ifcName": "IfcRectangleProfileDef|102",
-                "sectionType": "rectangular",
-                "sectionVariation": "constant",
+                "profileType": "rectangular",
+                "profileVariation": "constant",
                 "xDim": 0.2,
                 "yDim": 0.4
             },
@@ -62,7 +65,11 @@
                 "drx": true,
                 "dry": true,
                 "drz": true
-            }
+            },
+            "relatedElements": [
+                "IfcStructuralCurveMember|133"
+            ]
         }
-    ]
+    ],
+    "connections": []
 }
