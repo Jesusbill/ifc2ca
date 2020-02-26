@@ -2,8 +2,8 @@ from __future__ import division
 import json
 import codecs
 
-FILENAME = r'/home/jesusbill/Dev-Projects/github.com/Jesusbill/ifc2ca/ifc2ca.json'
-FILENAMEASTER = r'/home/jesusbill/Dev-Projects/github.com/Jesusbill/ifc2ca/CA_input_00.comm'
+FILENAME = r'/home/jesusbill/Dev-Projects/github.com/Jesusbill/ifc2ca/examples/cantilever_01/ifc2ca.json'
+FILENAMEASTER = r'/home/jesusbill/Dev-Projects/github.com/Jesusbill/ifc2ca/examples/cantilever_01/CA_input_00.comm'
 
 def getGroupName(name):
     if len(name) <= 24:
@@ -96,9 +96,9 @@ model = AFFE_MODELE(
 
         context = {
             'matNameID': 'matF'+ '_%s' % i,
-            'youngModulus': float(elem['material']['youngModulus']),
-            'poissonRatio': float(elem['material']['poissonRatio']),
-            'massDensity': float(elem['material']['massDensity'])
+            'youngModulus': float(elem['material']['mechProps']['youngModulus']),
+            'poissonRatio': float(elem['material']['mechProps']['poissonRatio']),
+            'massDensity': float(elem['material']['commonProps']['massDensity'])
         }
 
         f.write(template.format(**context))
@@ -151,13 +151,13 @@ element = AFFE_CARA_ELEM(
             GROUP_MA = '{group_name}',
             SECTION = 'RECTANGLE',
             CARA = ('HY', 'HZ'),
-            VALE = {sectionDimensions}
+            VALE = {profileDimensions}
 
         ),'''
 
         context = {
             'group_name': getGroupName(str(elem['ifcName'])),
-            'sectionDimensions': (elem['section']['xDim'], elem['section']['yDim'])
+            'profileDimensions': (elem['profile']['xDim'], elem['profile']['yDim'])
         }
 
         f.write(template.format(**context))
