@@ -39,11 +39,11 @@ Output
 ### Current Status
 _As of 26/02/20:_
 - Added portal example
-- Added I profile
-- Modified material and section schema with mechanical and common properties
+- Changed `section` to `profile` and added I profile
+- Modified material and profile schema with mechanical and common properties
 - Added geometry identification for point connection from representation
 - Added connections along with supports based on the number of elements a connection is applied to
-- TO DO: Implement connections and supports with elastic stiffness input as spring elements
+- Applied conditions with elastic stiffness values is still not implemented. Only True/False values are accepted.
 
 _As of 09/02/20:_
 - Loads, load cases and load case combinations added in the example `inputDataCA.json` file
