@@ -7,35 +7,42 @@ Files and scripts for a Proof of Concept regarding the use of Code_Aster in IFC-
 - [`scriptSalome.py`](scriptSalome.py): a python script to run in the Salome_Meca environment. Creates the geometry and the mesh of the structure
 - [`cliCodeAster.py`](cliCodeAster.py): a python cli to create the input file (`.comm`) for Code_Aster. Use `run.py` to facilitate the use
 
-#### Proof of Concept: A cantilever beam under its own weight
-###### Input
-- [`inputDataCA.json`](inputDataCA.json): json data file of a cantilever beam under its own weight
-- [`bldMesh.med`](CodeAsterModel-CantileverBeam/bldMesh.med): mesh file exported from Salome_Meca after executing `scriptSalome`
-- [`CA_input_00.comm`](CodeAsterModel-CantileverBeam/CA_input_00.comm): command file generated from `cliCodeAster`
+---
 
-###### Output
-- [`result.mess`](CodeAsterModel-CantileverBeam/result.mess): message log file of the interpreted commands in Code_Aster
-- [`result.rmed`](CodeAsterModel-CantileverBeam/result.rmed): result file on the mesh of the structure to visualize in Salome_Meca
+#### Examples
+##### _cantilever_01_
+Input
+- [`ifc2ca.json`](examples/cantilever_01/ifc2ca.json): json data file of a cantilever beam under its own weight
+- [`bldMesh.med`](examples/cantilever_01/bldMesh.med): mesh file exported from Salome_Meca after executing `scriptSalome`
+- [`CA_input_00.comm`](examples/cantilever_01/CA_input_00.comm): command file generated from `cliCodeAster`
+
+Output
+- [`result.mess`](examples/cantilever_01/result.mess): message log file of the interpreted commands in Code_Aster
+- [`result.rmed`](examples/cantilever_01/result.rmed): result file on the mesh of the structure to visualize in Salome_Meca
+
+![note](examples/cantilever_01/CA_5.png)
+
+##### _portal_01_
+Input
+- [`ifc2ca.json`](examples/portal_01/ifc2ca.json): json data file of a cantilever beam under its own weight
+- [`bldMesh.med`](examples/portal_01/bldMesh.med): mesh file exported from Salome_Meca after executing `scriptSalome`
+- [`CA_input_00.comm`](examples/portal_01/CA_input_00.comm): command file generated from `cliCodeAster`
+
+Output
+- [`result.mess`](examples/portal_01/result.mess): message log file of the interpreted commands in Code_Aster
+- [`result.rmed`](examples/portal_01/result.rmed): result file on the mesh of the structure to visualize in Salome_Meca
+
+![note](examples/portal_01/CA_2.png)
+
+---
 
 ### Current Status
 _As of 09/02/20:_
 - Loads, load cases and load case combinations added in the example `inputDataCA.json` file
 - Implementation in BlenderBIM under way
 
- ![note](CodeAsterModel-CantileverBeam/cantileverBeamProblemDescription.png)
+ ![note](examples/cantilever_01/cantileverBeamProblemDescription.png)
 
 _As of 16/01/20:_
 - Only line geometries for structural elements and point geometries for supports are considered
 - The structure is analysed for gravity loads with a single linear static analysis
-
- Running `scriptSalome.py` in _salome_meca_. View of Geometry and Mesh
- ![note](CodeAsterModel-CantileverBeam/CA_1.png)
-
- Importing the command file in _asterStudy_, the module with the UI to configure and run analyses with Code_Aster
- ![note](CodeAsterModel-CantileverBeam/CA_2.png)
-
- Running the analysis always in _asterStudy_. Green light designates a successful execution
- ![note](CodeAsterModel-CantileverBeam/CA_3.png)
-
- Viewing the results in _ParaViS_, the port of ParaView in the ecosystem
- ![note](CodeAsterModel-CantileverBeam/CA_4.png)

@@ -1,6 +1,6 @@
 ## IFC2CA
 
-This `json` file contains the basic information needed to define a simple cantilever steel beam and perform a gravity analysis under its own weight.
+This `json` file contains the basic information needed to define a structural model and perform a gravity analysis under its own weight. This schema is used to understand the data needed so that they cna be identified in an `ifc` file. The latest schema of the extracted file is constantly changing, the interested user can see the respective file in each example.
 
 We define a single element in the `elements` Array with thte following properties:
 - `geometry`: an Array of arrays of 3D point coordinates [m]

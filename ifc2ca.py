@@ -94,9 +94,7 @@ class IFC2CA:
         representation = self.get_support_representation(support)
         item = representation.Items[0]
         if item.is_a('IfcVertexPoint'):
-            return [
-                self.get_coordinate(item.VertexGeometry)
-            ]
+            return self.get_coordinate(item.VertexGeometry)
 
     def get_support_input(self, support):
         if support.AppliedCondition:
@@ -222,7 +220,7 @@ class IFC2CA:
                 }
             }
 
-ifc2ca = IFC2CA('ifcModels/cantilever_01.ifc')
+ifc2ca = IFC2CA('ifcModels/portal_01.ifc')
 ifc2ca.convert()
 # print(json.dumps(ifc2ca.result, indent=4))
 with open('ifc2ca.json', 'w') as f:

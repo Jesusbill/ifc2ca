@@ -2,8 +2,8 @@ from __future__ import division
 import json
 import codecs
 
-FILENAME = r'/home/jesusbill/Dev-Projects/github.com/Jesusbill/ifc2ca/examples/cantilever_01/ifc2ca.json'
-FILENAMEASTER = r'/home/jesusbill/Dev-Projects/github.com/Jesusbill/ifc2ca/examples/cantilever_01/CA_input_00.comm'
+FILENAME = r'/home/jesusbill/Dev-Projects/github.com/Jesusbill/ifc2ca/examples/portal_01/ifc2ca.json'
+FILENAMEASTER = r'/home/jesusbill/Dev-Projects/github.com/Jesusbill/ifc2ca/examples/portal_01/CA_input_00.comm'
 
 def getGroupName(name):
     if len(name) <= 24:
@@ -44,7 +44,7 @@ def createCommFile():
 '''
 # STEP: INITIALIZE STUDY
 DEBUT(
-    PAR_LOT = 'OUI',
+    PAR_LOT = 'OUI'
 )
 '''
     )
@@ -93,11 +93,18 @@ model = AFFE_MODELE(
     )
 )
 '''
+        if 'poissonRatio' in elem['material']['mechProps']:
+            poissonRatio = elem['material']['mechProps']['poissonRatio']
+        else:
+            if 'shearModulus' in elem['material']['mechProps']:
+                poissonRatio = (elem['material']['mechProps']['youngModulus'] / 2 / elem['material']['mechProps']['shearModulus']) - 1
+            else:
+                poissonRation = 0
 
         context = {
             'matNameID': 'matF'+ '_%s' % i,
             'youngModulus': float(elem['material']['mechProps']['youngModulus']),
-            'poissonRatio': float(elem['material']['mechProps']['poissonRatio']),
+            'poissonRatio': float(poissonRatio),
             'massDensity': float(elem['material']['commonProps']['massDensity'])
         }
 
@@ -144,23 +151,44 @@ element = AFFE_CARA_ELEM(
     )
 
     for i,elem in enumerate(buildElements_1D):
+        if elem['profile']['profileType'] == 'rectangular':
+            template = \
+            '''
+            _F(
+                GROUP_MA = '{group_name}',
+                SECTION = 'RECTANGLE',
+                CARA = ('HY', 'HZ'),
+                VALE = {profileDimensions}
+            ),'''
 
-        template = \
-        '''
-        _F(
-            GROUP_MA = '{group_name}',
-            SECTION = 'RECTANGLE',
-            CARA = ('HY', 'HZ'),
-            VALE = {profileDimensions}
+            context = {
+                'group_name': getGroupName(str(elem['ifcName'])),
+                'profileDimensions': (elem['profile']['xDim'], elem['profile']['yDim'])
+            }
 
-        ),'''
+            f.write(template.format(**context))
 
-        context = {
-            'group_name': getGroupName(str(elem['ifcName'])),
-            'profileDimensions': (elem['profile']['xDim'], elem['profile']['yDim'])
-        }
+        elif elem['profile']['profileType'] == 'iSymmetrical':
+            template = \
+            '''
+            _F(
+                GROUP_MA = '{group_name}',
+                SECTION = 'GENERALE',
+                CARA = ('A', 'IY', 'IZ', 'JX'),
+                VALE = {profileProperties}
+            ),'''
 
-        f.write(template.format(**context))
+            context = {
+                'group_name': getGroupName(str(elem['ifcName'])),
+                'profileProperties': (
+                    elem['profile']['mechProps']['crossSectionArea'],
+                    elem['profile']['mechProps']['momentOfInertiaY'],
+                    elem['profile']['mechProps']['momentOfInertiaZ'],
+                    elem['profile']['mechProps']['torsionalSectionModulus']
+                )
+            }
+
+            f.write(template.format(**context))
 
     f.write(
 '''
@@ -175,8 +203,7 @@ element = AFFE_CARA_ELEM(
         _F(
             GROUP_MA = '{group_name}',
             CARA = ('ANGL_VRIL',),
-            VALE = {rotation},
-
+            VALE = {rotation}
         ),'''
 
         context = {
@@ -233,8 +260,8 @@ exPESA = AFFE_CHAR_MECA(
     MODELE = model,
     PESANTEUR = _F(
         GRAVITE = {AccelOfGravity},
-        DIRECTION = (0.,0.,-1.),
-    ),
+        DIRECTION = (0.,0.,-1.)
+    )
 )
 '''
     context = {
@@ -253,10 +280,10 @@ res_Bld = MECA_STATIQUE(
     CARA_ELEM = element,
     EXCIT = (
         _F(
-            CHARGE = grdSupps,
+            CHARGE = grdSupps
         ),
         _F(
-            CHARGE = exPESA,
+            CHARGE = exPESA
         )
     )
 )
@@ -346,8 +373,8 @@ IMPR_RESU(
 	RESU = _F(
  		RESULTAT = res_Bld,
  		NOM_CHAM = ('DEPL',), # 'REAC_NODA', 'FORC_NODA',
- 		NOM_CHAM_MED = ('Bld_DISP',), #  'Bld_REAC', 'Bld_FORC',
-    ),
+ 		NOM_CHAM_MED = ('Bld_DISP',), #  'Bld_REAC', 'Bld_FORC'
+    )
 )
 '''
     )

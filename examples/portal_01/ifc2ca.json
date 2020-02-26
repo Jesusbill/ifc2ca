@@ -27,8 +27,8 @@
             "material": {
                 "ifcName": "IfcMaterial|353",
                 "mechProps": {
-                    "youngModulus": 29.0,
-                    "shearModulus": 11.2
+                    "youngModulus": 29000000.0,
+                    "shearModulus": 11200000.0
                 },
                 "commonProps": {
                     "massDensity": 0.284011391108717
@@ -77,8 +77,8 @@
             "material": {
                 "ifcName": "IfcMaterial|353",
                 "mechProps": {
-                    "youngModulus": 29.0,
-                    "shearModulus": 11.2
+                    "youngModulus": 29000000.0,
+                    "shearModulus": 11200000.0
                 },
                 "commonProps": {
                     "massDensity": 0.284011391108717
@@ -127,8 +127,8 @@
             "material": {
                 "ifcName": "IfcMaterial|353",
                 "mechProps": {
-                    "youngModulus": 29.0,
-                    "shearModulus": 11.2
+                    "youngModulus": 29000000.0,
+                    "shearModulus": 11200000.0
                 },
                 "commonProps": {
                     "massDensity": 0.284011391108717
@@ -158,7 +158,7 @@
         }
     ],
     "mesh": {
-        "meshSize": 0.2
+        "meshSize": 6.0
     },
     "supports": [
         {
@@ -167,11 +167,9 @@
             "id": "3539fAVu96i8mFr0cgUqeI",
             "geometryType": "point",
             "geometry": [
-                [
-                    0.0,
-                    0.0,
-                    0.0
-                ]
+                0.0,
+                0.0,
+                0.0
             ],
             "appliedCondition": {
                 "dx": true,
@@ -191,11 +189,9 @@
             "id": "1dqi3aUQP3yeww5muaF15h",
             "geometryType": "point",
             "geometry": [
-                [
-                    192.0,
-                    0.0,
-                    0.0
-                ]
+                192.0,
+                0.0,
+                0.0
             ],
             "appliedCondition": {
                 "dx": true,
@@ -217,11 +213,9 @@
             "id": "2mc6ibF258HPIpTmqg6DSl",
             "geometryType": "point",
             "geometry": [
-                [
-                    0.0,
-                    0.0,
-                    120.0
-                ]
+                0.0,
+                0.0,
+                120.0
             ],
             "appliedCondition": null,
             "relatedElements": [
@@ -235,11 +229,9 @@
             "id": "0IHrRf6abAZwDys7n7fbS2",
             "geometryType": "point",
             "geometry": [
-                [
-                    192.0,
-                    0.0,
-                    120.0
-                ]
+                192.0,
+                0.0,
+                120.0
             ],
             "appliedCondition": null,
             "relatedElements": [

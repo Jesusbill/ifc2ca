@@ -12,7 +12,7 @@ import salome_notebook
 #                             'Salome Script - Choose File', '.',
 #                             'Json Data File (*.json)')
 
-FILENAME = r'/home/jesusbill/Dev-Projects/github.com/Jesusbill/ifc2ca/examples/cantilever_01/ifc2ca.json'
+FILENAME = r'/home/jesusbill/Dev-Projects/github.com/Jesusbill/ifc2ca/examples/portal_01/ifc2ca.json'
 # FILENAMESALOME = r'/home/jesusbill/Dev-Projects/github.com/Jesusbill/ifc2ca/inputDataCA_Salome.json'
 
 # Read data from input file
