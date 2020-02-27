@@ -11,4 +11,4 @@
  ![note](CA_3.png)
 
  Viewing the results in _ParaViS_, the port of ParaView in the ecosystem
- ![note](CA_5.png)
+ ![note](CA_4.png)
