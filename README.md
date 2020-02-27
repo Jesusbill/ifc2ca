@@ -20,7 +20,7 @@ Output
 - [`result.mess`](examples/cantilever_01/result.mess): message log file of the interpreted commands in Code_Aster
 - [`result.rmed`](examples/cantilever_01/result.rmed): result file on the mesh of the structure to visualize in Salome_Meca
 
-![note](examples/cantilever_01/CA_5.png)
+![note](examples/cantilever_01/CA_4.png)
 
 ##### _portal_01_
 Input
