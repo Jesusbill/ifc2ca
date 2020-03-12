@@ -1,7 +1,7 @@
 ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('ViewDefinition [CoordinationView]'),'2;1');
-FILE_NAME('ifc2ca.blend.ifc','2020-01-20T20:21:54+11:00',('$owner','$email'),('$company'),'IfcOpenShell 0.6.0b0','BlenderBIM 0.0.999999','Moult');
+FILE_NAME('cantilever_01.ifc','2020-01-20T20:21:54+11:00',('$owner','$email'),('$company'),'IfcOpenShell 0.6.0b0','BlenderBIM 0.0.999999','Moult');
 FILE_SCHEMA(('IFC4'));
 ENDSEC;
 DATA;
