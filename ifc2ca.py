@@ -1,186 +1,91 @@
 import json
 import ifcopenshell
 
-class IFC2CA:
+class IFC2CA(object):
     def __init__(self, filename):
         self.filename = filename
         self.file = None
         self.result = {}
-        self.supports = []
 
     def convert(self):
         self.file = ifcopenshell.open(self.filename)
         for model in self.file.by_type('IfcStructuralAnalysisModel'):
             self.result = {
-                'title': model.Name,
-                'units': self.get_units(),
-                'elements': self.get_elements(model),
-                'mesh': { 'meshSize': 0.2 }, # TODO: unhardcode
-                'supports': self.get_supports(),
-                'connections': self.get_connections()
+                'ifcName': model.is_a() + '|' + str(model.id()),
+                'name': model.Name,
+                'id': model.GlobalId,
+                'elements': self.get_structural_items(model, item_type='IfcStructuralMember'),
+                'connections': self.get_structural_items(model, item_type='IfcStructuralConnection')
             }
 
             print('Number of elements: ', len(self.result['elements']))
-            print('Number of supports: ', len(self.result['supports']))
             print('Number of connections: ', len(self.result['connections']))
 
-    def get_units(self):
-        # TODO: unhardcode
-        units = {}
-        for unit in self.file.by_type('IfcUnitAssignment')[0].Units:
-            if unit.UnitType == 'LENGTHUNIT':
-                units['length'] = 'm'
-        units['force'] = 'N'
-        units['angle'] = 'deg'
-        return units
+            break
 
-    def get_elements(self, model):
-        elements = []
+    def get_structural_items(self, model, item_type='IfcStructuralItem'):
+        items = []
         for group in model.IsGroupedBy:
-            for element in group.RelatedObjects:
-                if not element.is_a('IfcStructuralMember'):
+            for item in group.RelatedObjects:
+                if not item.is_a(item_type):
                     continue
-                data = self.get_element_data(element)
+                data = self.get_item_data(item)
                 if data:
-                    elements.append(data)
-        return elements
+                    items.append(data)
+        return items
 
-    def get_element_data(self, element):
-        if element.is_a('IfcStructuralCurveMember'):
-            representation = self.get_representation(element, 'Edge')
-            material_profile = self.get_material_profile(element)
+    def get_item_data(self, item):
+        if item.is_a('IfcStructuralCurveMember'):
+            representation = self.get_representation(item, 'Edge')
+            material_profile = self.get_material_profile(item)
             if not representation or not material_profile:
                 print(representation, material_profile)
                 return
-            for connection in element.ConnectedBy:
-                if connection.RelatedStructuralConnection:
-                    self.supports.append(connection.RelatedStructuralConnection)
+
             return {
-                'ifcName': element.is_a() + '|' + str(element.id()),
-                'name': element.Name,
-                'id': element.GlobalId,
-                'geometryType': self.get_geometry_type(representation),
+                'ifcName': item.is_a() + '|' + str(item.id()),
+                'name': item.Name,
+                'id': item.GlobalId,
+                'predefinedType': item.PredefinedType,
                 'geometry': self.get_geometry(representation),
-                'rotation': 0, # TODO: unhardcode
                 'material': self.get_material_properties(material_profile.Material),
                 'profile': self.get_profile_properties(material_profile.Profile),
-                'elementType': 'EulerBeam' # TODO: unhardcode
+                'connections': self.get_connection_data(item.ConnectedBy)
             }
 
-        elif element.is_a('IfcStructuralSurfaceMember'):
-            representation = self.get_representation(element, 'Face')
-            material = self.get_material_profile(element)
+        elif item.is_a('IfcStructuralSurfaceMember'):
+            representation = self.get_representation(item, 'Face')
+            material = self.get_material_profile(item)
             if not representation:
                 print(representation)
                 return
-            for connection in element.ConnectedBy:
-                if connection.RelatedStructuralConnection:
-                    self.supports.append(connection.RelatedStructuralConnection)
+
             return {
-                'ifcName': element.is_a() + '|' + str(element.id()),
-                'name': element.Name,
-                'id': element.GlobalId,
-                'thickness': element.Thickness,
-                # 'geometryType': self.get_geometry_type(representation),
+                'ifcName': item.is_a() + '|' + str(item.id()),
+                'name': item.Name,
+                'id': item.GlobalId,
+                'predefinedType': item.PredefinedType,
+                'thickness': item.Thickness,
                 'geometry': self.get_geometry(representation),
                 'material': self.get_material_properties(material),
-                # 'elementType': 'EulerBeam' # TODO: unhardcode
+                'connections': self.get_connection_data(item.ConnectedBy)
             }
 
-    def get_supports(self):
-        supports = []
-        for support in self.supports:
-            if support.GlobalId in [s['id'] for s in supports]:
-                continue
-            if len(support.ConnectsStructuralMembers) != 1:
-                continue
-            supports.append({
-                'ifcName': support.is_a() + '|' + str(support.id()),
-                'name': support.Name,
-                'id': support.GlobalId,
-                'geometryType': self.get_support_geometry_type(support),
-                'geometry': self.get_support_geometry(support),
-                'appliedCondition': self.get_support_input(support),
-                'relatedElements': self.get_support_members(support)
-            })
-        return supports
+        elif item.is_a('IfcStructuralPointConnection'):
+            representation = self.get_representation(item, 'Vertex')
+            if not representation:
+                print(representation)
+                return
 
-    def get_connections(self):
-        supports = []
-        for support in self.supports:
-            if support.GlobalId in [s['id'] for s in supports]:
-                continue
-            if len(support.ConnectsStructuralMembers) <= 1:
-                continue
-            supports.append({
-                'ifcName': support.is_a() + '|' + str(support.id()),
-                'name': support.Name,
-                'id': support.GlobalId,
-                'geometryType': self.get_support_geometry_type(support),
-                'geometry': self.get_support_geometry(support),
-                'appliedCondition': self.get_support_input(support),
-                'relatedElements': self.get_support_members(support)
-            })
-        return supports
-
-    def get_support_geometry_type(self, support):
-        if support.is_a('IfcStructuralPointConnection'):
-            return 'point'
-
-    def get_support_geometry(self, support):
-        # TODO: make more robust
-        # if support.ObjectPlacement:
-        #     return support.ObjectPlacement.RelativePlacement.Location.Coordinates
-        representation = self.get_support_representation(support)
-        item = representation.Items[0]
-        if item.is_a('IfcVertexPoint'):
-            return self.get_coordinate(item.VertexGeometry)
-
-    def get_support_input(self, support):
-        if support.AppliedCondition:
             return {
-                'dx': support.AppliedCondition.TranslationalStiffnessX.wrappedValue,
-                'dy': support.AppliedCondition.TranslationalStiffnessY.wrappedValue,
-                'dz': support.AppliedCondition.TranslationalStiffnessZ.wrappedValue,
-                'drx': support.AppliedCondition.RotationalStiffnessX.wrappedValue,
-                'dry': support.AppliedCondition.RotationalStiffnessY.wrappedValue,
-                'drz': support.AppliedCondition.RotationalStiffnessZ.wrappedValue
+                'ifcName': item.is_a() + '|' + str(item.id()),
+                'name': item.Name,
+                'id': item.GlobalId,
+                'geometryType': 'point',
+                'geometry': self.get_geometry(representation),
+                'appliedCondition': self.get_connection_input(item),
+                'relatedElements': self.get_connection_data(item.ConnectsStructuralMembers)
             }
-        return None
-
-    def get_support_members(self, support):
-        answer = []
-        for s in support.ConnectsStructuralMembers:
-            if s.is_a('IfcRelConnectsStructuralMember'):
-                answer.append({
-                    'ifcName': s.is_a() + '|' + str(s.id()),
-                    'element': s.RelatingStructuralMember.is_a() + '|' + str(s.RelatingStructuralMember.id()),
-                    'geometryPointIndex': None
-                })
-
-            if s.is_a('IfcRelConnectsWithEccentricity'):
-                answer.append({
-                    'ifcName': s.is_a() + '|' + str(s.id()),
-                    'element': s.RelatingStructuralMember.is_a() + '|' + str(s.RelatingStructuralMember.id()),
-                    'geometryPointIndex': 1 if s.ConnectionConstraint.EccentricityInX < 0 else 2,
-                    'linkLength': abs(s.ConnectionConstraint.EccentricityInX)
-                })
-
-        return answer
-
-    def get_support_representation(self, element):
-        if not element.Representation:
-            return None
-        for representation in element.Representation.Representations:
-            rep = self.get_specific_representation(representation, 'Reference', 'Vertex')
-            if rep:
-                return rep
-        else:
-            # print('Trying without rep identifier')
-            for representation in element.Representation.Representations:
-                rep = self.get_specific_representation(representation, None, 'Vertex')
-                if rep:
-                    return rep
 
     def get_representation(self, element, rep_type):
         if not element.Representation:
@@ -205,11 +110,6 @@ class IFC2CA:
                 representation.Items[0].MappingSource.MappedRepresentation,
                 rep_id, rep_type)
 
-    def get_geometry_type(self, representation):
-        if representation.Items[0].is_a('IfcEdgeCurve'):
-            return 'curvedLine' # TODO: Is this correct?
-        return 'straightLine'
-
     def get_geometry(self, representation):
         # Maybe IfcOpenShell can use create_shape here to simplify this, but
         # supposedly structural models are very simple anyway, so perhaps we
@@ -221,12 +121,15 @@ class IFC2CA:
                 self.get_coordinate(item.EdgeEnd.VertexGeometry)
             ]
 
-        if item.is_a('IfcFaceSurface'):
+        elif item.is_a('IfcFaceSurface'):
             edges = item.Bounds[0].Bound.EdgeList
             coords = []
             for edge in edges:
                 coords.append(self.get_coordinate(edge.EdgeElement.EdgeStart.VertexGeometry))
             return coords
+
+        elif item.is_a('IfcVertexPoint'):
+            return self.get_coordinate(item.VertexGeometry)
 
     def get_coordinate(self, point):
         if point.is_a('IfcCartesianPoint'):
@@ -262,6 +165,7 @@ class IFC2CA:
 
         return {
             'ifcName': material.is_a() + '|' + str(material.id()),
+            'name': material.Name,
             'mechProps': mechProps,
             'commonProps':commonProps
         }
@@ -286,8 +190,9 @@ class IFC2CA:
         if profile.is_a('IfcRectangleProfileDef'):
             return {
                 'ifcName': profile.is_a() + '|' + str(profile.id()),
-                'profileType': 'rectangular',
-                'profileVariation': 'constant',
+                'profileName': profile.ProfileName,
+                'profileType': profile.ProfileType,
+                'profileShape': 'rectangular',
                 'xDim': profile.XDim,
                 'yDim': profile.YDim
             }
@@ -296,7 +201,9 @@ class IFC2CA:
             psets = profile.HasProperties
             return {
                 'ifcName': profile.is_a() + '|' + str(profile.id()),
-                'profileType': 'iSymmetrical',
+                'profileName': profile.ProfileName,
+                'profileType': profile.ProfileType,
+                'profileShape': 'iSymmetrical',
                 'mechProps': self.get_pset_properties(psets, 'Pset_ProfileMechanical'),
                 'commonProps': {
                     'flangeThickness': profile.FlangeThickness,
@@ -304,15 +211,45 @@ class IFC2CA:
                     'overallDepth': profile.OverallDepth,
                     'overallWidth': profile.OverallWidth,
                     'filletRadius': profile.FilletRadius,
-                    'profileName': profile.ProfileName,
-                    'profileType': profile.ProfileType
                 }
             }
 
-fileName = 'building_01'
-ifc2ca = IFC2CA('ifcModels/' + fileName + '.ifc')
-ifc2ca.convert()
-# print(json.dumps(ifc2ca.result, indent=4))
-# with open('ifc2ca.json', 'w') as f:
-with open(('ifcModels/' + fileName + '.json') , 'w') as f:
-    f.write(json.dumps(ifc2ca.result, indent = 4))
+    def get_connection_data(self, itemList):
+        return [{
+            'ifcName': rel.is_a() + '|' + str(rel.id()),
+            'id': rel.GlobalId,
+            'relatingElement': rel.RelatingStructuralMember.is_a() + '|' + str(rel.RelatingStructuralMember.id()),
+            'relatedConnection': rel.RelatedStructuralConnection.is_a() + '|' + str(rel.RelatedStructuralConnection.id()),
+            'eccentricity': None if not rel.is_a('IfcRelConnectsWithEccentricity') else {
+                    'inX': 0.0 if not rel.ConnectionConstraint.EccentricityInX else rel.ConnectionConstraint.EccentricityInX,
+                    'inY': 0.0 if not rel.ConnectionConstraint.EccentricityInY else rel.ConnectionConstraint.EccentricityInY,
+                    'inZ': 0.0 if not rel.ConnectionConstraint.EccentricityInZ else rel.ConnectionConstraint.EccentricityInZ,
+                    'pointOnElement': self.get_coordinate(rel.ConnectionConstraint.PointOnRelatingElement)
+                }
+            # 'geometryPointIndex': None
+        } for rel in itemList]
+
+    def get_connection_input(self, connection):
+        if connection.AppliedCondition:
+            return {
+                'dx': connection.AppliedCondition.TranslationalStiffnessX.wrappedValue,
+                'dy': connection.AppliedCondition.TranslationalStiffnessY.wrappedValue,
+                'dz': connection.AppliedCondition.TranslationalStiffnessZ.wrappedValue,
+                'drx': connection.AppliedCondition.RotationalStiffnessX.wrappedValue,
+                'dry': connection.AppliedCondition.RotationalStiffnessY.wrappedValue,
+                'drz': connection.AppliedCondition.RotationalStiffnessZ.wrappedValue
+            }
+        return connection.AppliedCondition
+
+
+if __name__ == '__main__':
+    fileNames = ['cantilever_01', 'beam_01', 'portal_01', 'building_01'];
+    files = fileNames[:]
+
+    for fileName in files:
+        ifc2ca = IFC2CA('ifcModels/' + fileName + '.ifc')
+        ifc2ca.convert()
+        # print(json.dumps(ifc2ca.result, indent=4))
+        # with open('ifc2ca.json', 'w') as f:
+        with open(('ifcModels/' + fileName + '.json') , 'w') as f:
+            f.write(json.dumps(ifc2ca.result, indent = 4))
