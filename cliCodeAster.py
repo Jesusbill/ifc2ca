@@ -1,18 +1,12 @@
-from __future__ import division
 import json
 import codecs
 
-FILENAME = r'/home/jesusbill/Dev-Projects/github.com/Jesusbill/ifc2ca/examples/portal_01/ifc2ca.json'
-FILENAMEASTER = r'/home/jesusbill/Dev-Projects/github.com/Jesusbill/ifc2ca/examples/portal_01/CA_input_00.comm'
-
 def getGroupName(name):
-    if len(name) <= 24:
-        return name
-    else:
-        info = name.split('|')
-        return str(info[0][:24 - len(info[1]) - 1] + '_' + info[1])
+    info = name.split('|')
+    sortName = ''.join(c for c in info[0] if c.isupper())
+    return str(sortName + '_' + info[1])
 
-def createCommFile():
+def createCommFile(FILENAME, FILENAMEASTER):
 
     AccelOfGravity = 9.806 # m/sec^2
 
@@ -20,16 +14,26 @@ def createCommFile():
     with open(FILENAME) as dataFile:
         data = json.load(dataFile)
 
-    units = data['units']
     elements = data['elements']
-    mesh = data['mesh']
-    supports = data['supports']
+    connections = data['connections']
 
-    buildElements_1D = []
-    buildElements_1D.extend(elements)
+    edgeGroupNames = tuple([getGroupName(str(el['ifcName'])) for el in elements if el['geometryType'] == 'line'])
+    faceGroupNames = tuple([getGroupName(str(el['ifcName'])) for el in elements if el['geometryType'] == 'surface'])
 
-    buildElements = []
-    buildElements.extend(buildElements_1D)
+    unifiedConnection = False
+    rigidLinkGroupNames = []
+    for conn in connections:
+        conn['relatedGroupNames'] = tuple([getGroupName(str(rel['relatingElement'])) + '_0D_to_' + getGroupName(str(conn['ifcName'])) for rel in conn['relatedElements']])
+        if not conn['appliedCondition'] and len(conn['relatedGroupNames']) == 1:
+            conn['appliedCondition'] = {
+                'dx': True,
+                'dy': True,
+                'dz': True
+            }
+        if len(conn['relatedGroupNames']) > 1:
+            unifiedConnection = True
+        rigidLinkGroupNames.extend([getGroupName(str(rel['relatingElement'])) + '_1D_to_' + getGroupName(str(conn['ifcName'])) for rel in conn['relatedElements'] if rel['eccentricity']])
+    rigidLinkGroupNames = tuple(rigidLinkGroupNames)
 
     # Define file to write command file for code_aster
     f = open(FILENAMEASTER, 'w')
@@ -38,13 +42,13 @@ def createCommFile():
     f.write('# Aether Engineering - www.aethereng.com\n')
     f.write('\n')
 
-    f.write('# Linear analysis with beam elements\n')
+    f.write('# Linear Static Analysis With Self-Weight\n')
 
     f.write(
 '''
 # STEP: INITIALIZE STUDY
 DEBUT(
-    PAR_LOT = 'OUI'
+    PAR_LOT = 'NON'
 )
 '''
     )
@@ -68,12 +72,56 @@ model = AFFE_MODELE(
             TOUT = 'OUI',
             PHENOMENE = 'MECANIQUE',
             MODELISATION = '3D'
-        ),
+        ),'''
+    )
+
+    if faceGroupNames:
+        template = \
+        '''
         _F(
-            GROUP_MA = 'lines',
+            GROUP_MA = {group_names},
+            PHENOMENE = 'MECANIQUE',
+            MODELISATION = 'DKT'
+        ),'''
+
+        context = {
+            'group_names': faceGroupNames
+        }
+
+        f.write(template.format(**context))
+
+    if edgeGroupNames:
+        template = \
+        '''
+        _F(
+            GROUP_MA = {group_names},
             PHENOMENE = 'MECANIQUE',
             MODELISATION = 'POU_D_E'
-        )
+        ),'''
+
+        context = {
+            'group_names': edgeGroupNames
+        }
+
+        f.write(template.format(**context))
+
+    if rigidLinkGroupNames:
+        template = \
+        '''
+        _F(
+            GROUP_MA = {group_names},
+            PHENOMENE = 'MECANIQUE',
+            MODELISATION = 'POU_D_E'
+        ),'''
+
+        context = {
+            'group_names': rigidLinkGroupNames
+        }
+
+        f.write(template.format(**context))
+
+    f.write(
+'''
     )
 )\n
 '''
@@ -82,7 +130,7 @@ model = AFFE_MODELE(
 
     f.write('# STEP: DEFINE MATERIALS')
 
-    for i,elem in enumerate(buildElements):
+    for i,el in enumerate(elements):
         template = \
 '''
 {matNameID} = DEFI_MATERIAU(
@@ -93,19 +141,19 @@ model = AFFE_MODELE(
     )
 )
 '''
-        if 'poissonRatio' in elem['material']['mechProps']:
-            poissonRatio = elem['material']['mechProps']['poissonRatio']
+        if 'poissonRatio' in el['material']['mechProps']:
+            poissonRatio = el['material']['mechProps']['poissonRatio']
         else:
-            if 'shearModulus' in elem['material']['mechProps']:
-                poissonRatio = (elem['material']['mechProps']['youngModulus'] / 2 / elem['material']['mechProps']['shearModulus']) - 1
+            if 'shearModulus' in el['material']['mechProps']:
+                poissonRatio = (el['material']['mechProps']['youngModulus'] / 2.0 / el['material']['mechProps']['shearModulus']) - 1
             else:
                 poissonRation = 0
 
         context = {
             'matNameID': 'matF'+ '_%s' % i,
-            'youngModulus': float(elem['material']['mechProps']['youngModulus']),
+            'youngModulus': float(el['material']['mechProps']['youngModulus']),
             'poissonRatio': float(poissonRatio),
-            'massDensity': float(elem['material']['commonProps']['massDensity'])
+            'massDensity': float(el['material']['commonProps']['massDensity'])
         }
 
         f.write(template.format(**context))
@@ -118,8 +166,7 @@ material = AFFE_MATERIAU(
     AFFE = ('''
     )
 
-    for i,elem in enumerate(buildElements):
-
+    for i,el in enumerate(elements):
         template = \
         '''
         _F(
@@ -128,8 +175,23 @@ material = AFFE_MATERIAU(
         ),'''
 
         context = {
-            'group_name': getGroupName(str(elem['ifcName'])),
+            'group_name': getGroupName(str(el['ifcName'])),
             'matNameID': 'matF'+ '_%s' % i
+        }
+
+        f.write(template.format(**context))
+
+    if rigidLinkGroupNames:
+        template = \
+        '''
+        _F(
+            GROUP_MA = {group_names},
+            MATER = {matNameID},
+        ),'''
+
+        context = {
+            'group_names': rigidLinkGroupNames,
+            'matNameID': 'matF_0'
         }
 
         f.write(template.format(**context))
@@ -150,72 +212,125 @@ element = AFFE_CARA_ELEM(
     POUTRE = ('''
     )
 
-    for i,elem in enumerate(buildElements_1D):
-        if elem['profile']['profileType'] == 'rectangular':
+    for el in [el for el in elements if el['geometryType'] == 'line']:
+        if el['profile']['profileShape'] == 'rectangular':
             template = \
-            '''
-            _F(
-                GROUP_MA = '{group_name}',
-                SECTION = 'RECTANGLE',
-                CARA = ('HY', 'HZ'),
-                VALE = {profileDimensions}
-            ),'''
+        '''
+        _F(
+            GROUP_MA = '{group_name}',
+            SECTION = 'RECTANGLE',
+            CARA = ('HY', 'HZ'),
+            VALE = {profileDimensions}
+        ),'''
 
             context = {
-                'group_name': getGroupName(str(elem['ifcName'])),
-                'profileDimensions': (elem['profile']['xDim'], elem['profile']['yDim'])
+                'group_name': getGroupName(str(el['ifcName'])),
+                'profileDimensions': (el['profile']['xDim'], el['profile']['yDim'])
             }
 
             f.write(template.format(**context))
 
-        elif elem['profile']['profileType'] == 'iSymmetrical':
+        elif el['profile']['profileShape'] == 'iSymmetrical':
             template = \
-            '''
-            _F(
-                GROUP_MA = '{group_name}',
-                SECTION = 'GENERALE',
-                CARA = ('A', 'IY', 'IZ', 'JX'),
-                VALE = {profileProperties}
-            ),'''
+        '''
+        _F(
+            GROUP_MA = '{group_name}',
+            SECTION = 'GENERALE',
+            CARA = ('A', 'IY', 'IZ', 'JX'),
+            VALE = {profileProperties}
+        ),'''
 
             context = {
-                'group_name': getGroupName(str(elem['ifcName'])),
+                'group_name': getGroupName(str(el['ifcName'])),
                 'profileProperties': (
-                    elem['profile']['mechProps']['crossSectionArea'],
-                    elem['profile']['mechProps']['momentOfInertiaY'],
-                    elem['profile']['mechProps']['momentOfInertiaZ'],
-                    elem['profile']['mechProps']['torsionalSectionModulus']
+                    el['profile']['mechProps']['crossSectionArea'],
+                    el['profile']['mechProps']['momentOfInertiaY'],
+                    el['profile']['mechProps']['momentOfInertiaZ'],
+                    el['profile']['mechProps']['torsionalConstantX']
                 )
             }
 
             f.write(template.format(**context))
 
-    f.write(
-'''
-    ),
-    ORIENTATION = ('''
-    )
-
-    for i,elem in enumerate(buildElements_1D):
-
+    if rigidLinkGroupNames:
         template = \
         '''
         _F(
-            GROUP_MA = '{group_name}',
-            CARA = ('ANGL_VRIL',),
-            VALE = {rotation}
+            GROUP_MA = {group_names},
+            SECTION = 'RECTANGLE',
+            CARA = ('HY', 'HZ'),
+            VALE = {profileDimensions}
         ),'''
 
         context = {
-            'group_name': getGroupName(str(elem['ifcName'])),
-            'rotation': (elem['rotation'],)
+            'group_names': rigidLinkGroupNames,
+            'profileDimensions': (1, 1)
         }
 
         f.write(template.format(**context))
 
     f.write(
 '''
+    ),
+    COQUE = ('''
     )
+
+    for el in [el for el in elements if el['geometryType'] == 'surface']:
+
+        template = \
+        '''
+        _F(
+            GROUP_MA = '{group_name}',
+            EPAIS = {thickness},
+            VECTEUR = {orientationVector}
+        ),'''
+
+        context = {
+            'group_name': getGroupName(str(el['ifcName'])),
+            'thickness': el['thickness'],
+            'orientationVector': (
+                el['geometry'][1][0] - el['geometry'][0][0],
+                el['geometry'][1][1] - el['geometry'][0][1],
+                el['geometry'][1][2] - el['geometry'][0][2]
+            )
+        }
+
+        f.write(template.format(**context))
+
+    f.write(
+'''
+    ),'''
+    )
+
+    #     f.write(
+    # '''
+    #     ORIENTATION = ('''
+    #     )
+    #
+    #     for el in [el for el in elements if el['geometryType'] == 'line']:
+    #
+    #         template = \
+    #         '''
+    #         _F(
+    #             GROUP_MA = '{group_name}',
+    #             CARA = ('ANGL_VRIL',),
+    #             VALE = {rotation}
+    #         ),'''
+    #
+    #         context = {
+    #             'group_name': getGroupName(str(el['ifcName'])),
+    #             'rotation': 0 # (el['rotation'],)
+    #         }
+    #
+    #         f.write(template.format(**context))
+    #
+    #     f.write(
+    # '''
+    #     ),'''
+    #     )
+
+    f.write(
+'''
 )\n
 '''
     )
@@ -230,14 +345,14 @@ grdSupps = AFFE_CHAR_MECA(
     DDL_IMPO = ('''
     )
 
-    for i,support in enumerate(supports):
+    for conn in [conn for conn in connections if conn['appliedCondition']]:
         f.write(
         '''
         _F(
-            GROUP_NO = '%s',''' % getGroupName(str(support['ifcName']))
+            GROUP_NO = '%s',''' % conn['relatedGroupNames'][0]
         )
-        for dof in support['appliedCondition']:
-            if support['appliedCondition'][dof]:
+        for dof in conn['appliedCondition']:
+            if conn['appliedCondition'][dof]:
                 f.write(
         '''
             %s = 0,''' % (str(dof).upper())
@@ -246,12 +361,65 @@ grdSupps = AFFE_CHAR_MECA(
         '''
         ),'''
         )
+
     f.write(
-    '''
-    )
-)'''
+        '''
+    ),'''
     )
 
+    if unifiedConnection:
+        f.write(
+    '''
+    LIAISON_UNIF = ('''
+        )
+
+        for conn in [conn for conn in connections if len(conn['relatedGroupNames']) > 1]:
+            template = \
+        '''
+        _F(
+            GROUP_NO = {group_names},
+            DDL = ('DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ')
+        ),'''
+
+            context = {
+                'group_names': conn['relatedGroupNames']
+            }
+
+            f.write(template.format(**context))
+
+        f.write(
+    '''
+    ),'''
+        )
+
+    if rigidLinkGroupNames:
+        f.write(
+    '''
+    LIAISON_SOLIDE = ('''
+        )
+
+        for groupName in rigidLinkGroupNames:
+            template = \
+        '''
+        _F(
+            GROUP_MA = '{group_name}'
+        ),'''
+
+            context = {
+                'group_name': groupName
+            }
+
+            f.write(template.format(**context))
+
+        f.write(
+    '''
+    ),'''
+        )
+
+    f.write(
+    '''
+)'''
+    )
 
     template = \
 '''
@@ -387,3 +555,12 @@ FIN()
     )
 
     f.close()
+
+if __name__ == '__main__':
+    fileNames = ['cantilever_01', 'beam_01', 'portal_01', 'building_01', 'building-frame_01'];
+    files = [fileNames[3]]
+
+    for fileName in files:
+        FILENAME = 'examples/' + fileName + '/' + fileName + '.json'
+        FILENAMEASTER = 'examples/' + fileName + '/CA_input_00.comm'
+        createCommFile(FILENAME, FILENAMEASTER)

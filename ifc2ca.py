@@ -46,6 +46,7 @@ class IFC2CA(object):
                 'ifcName': item.is_a() + '|' + str(item.id()),
                 'name': item.Name,
                 'id': item.GlobalId,
+                'geometryType': 'line',
                 'predefinedType': item.PredefinedType,
                 'geometry': self.get_geometry(representation),
                 'material': self.get_material_properties(material_profile.Material),
@@ -64,6 +65,7 @@ class IFC2CA(object):
                 'ifcName': item.is_a() + '|' + str(item.id()),
                 'name': item.Name,
                 'id': item.GlobalId,
+                'geometryType': 'surface',
                 'predefinedType': item.PredefinedType,
                 'thickness': item.Thickness,
                 'geometry': self.get_geometry(representation),
@@ -199,12 +201,18 @@ class IFC2CA(object):
 
         if profile.is_a('IfcIShapeProfileDef'):
             psets = profile.HasProperties
+
+            if self.get_pset_properties(psets, 'Pset_ProfileMechanical'):
+                mechProps = self.get_pset_properties(psets, 'Pset_ProfileMechanical')
+            else:
+                mechProps = self.get_i_section_properties(profile, 'iSymmetrical')
+
             return {
                 'ifcName': profile.is_a() + '|' + str(profile.id()),
                 'profileName': profile.ProfileName,
                 'profileType': profile.ProfileType,
                 'profileShape': 'iSymmetrical',
-                'mechProps': self.get_pset_properties(psets, 'Pset_ProfileMechanical'),
+                'mechProps': mechProps,
                 'commonProps': {
                     'flangeThickness': profile.FlangeThickness,
                     'webThickness': profile.WebThickness,
@@ -241,6 +249,24 @@ class IFC2CA(object):
             }
         return connection.AppliedCondition
 
+    def get_i_section_properties(self, profile, profileShape):
+        if profileShape == 'iSymmetrical':
+            tf = profile.FlangeThickness
+            tw = profile.WebThickness
+            h = profile.OverallDepth
+            b = profile.OverallWidth
+
+            A = b * h - (b - tw) * (h - 2 * tf)
+            Iy = b * (h ** 3) / 12 - (b - tw) * ((h - 2 * tf) ** 3) / 12
+            Iz = (2 * tf) * (b ** 3) / 12 + (h - 2 * tf) * (tw ** 3) / 12
+            Jx = 1 / 3 * ((h - tf) * (tw ** 3) + 2 * b * (tf ** 3))
+
+            return {
+                'crossSectionArea': A,
+                'momentOfInertiaY': Iy,
+                'momentOfInertiaZ': Iz,
+                'torsionalConstantX': Jx
+            }
 
 if __name__ == '__main__':
     fileNames = ['cantilever_01', 'beam_01', 'portal_01', 'building_01'];
