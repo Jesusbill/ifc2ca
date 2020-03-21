@@ -23,7 +23,7 @@ model = AFFE_MODELE(
             MODELISATION = '3D'
         ),
         _F(
-            GROUP_MA = ('ISCM_228', 'ISCM_263', 'ISCM_296'),
+            GROUP_MA = ('ISCM_86',),
             PHENOMENE = 'MECANIQUE',
             MODELISATION = 'POU_D_E'
         ),
@@ -33,25 +33,9 @@ model = AFFE_MODELE(
 # STEP: DEFINE MATERIALS
 matF_0 = DEFI_MATERIAU(
     ELAS = _F(
-        E = 29000000.0,
-        NU = 0.2946428571428572,
-        RHO = 0.284011391108717
-    )
-)
-
-matF_1 = DEFI_MATERIAU(
-    ELAS = _F(
-        E = 29000000.0,
-        NU = 0.2946428571428572,
-        RHO = 0.284011391108717
-    )
-)
-
-matF_2 = DEFI_MATERIAU(
-    ELAS = _F(
-        E = 29000000.0,
-        NU = 0.2946428571428572,
-        RHO = 0.284011391108717
+        E = 30000.0,
+        NU = 0.2,
+        RHO = 2.5e-09
     )
 )
 
@@ -59,16 +43,8 @@ material = AFFE_MATERIAU(
     MAILLAGE = mesh,
     AFFE = (
         _F(
-            GROUP_MA = 'ISCM_228',
+            GROUP_MA = 'ISCM_86',
             MATER = matF_0,
-        ),
-        _F(
-            GROUP_MA = 'ISCM_263',
-            MATER = matF_1,
-        ),
-        _F(
-            GROUP_MA = 'ISCM_296',
-            MATER = matF_2,
         ),
     )
 )
@@ -78,37 +54,15 @@ element = AFFE_CARA_ELEM(
     MODELE = model,
     POUTRE = (
             _F(
-                GROUP_MA = 'ISCM_228',
-                SECTION = 'GENERALE',
-                CARA = ('A', 'IY', 'IZ', 'JX'),
-                VALE = (8.84, 170.0, 16.7, 0.622)
-            ),
-            _F(
-                GROUP_MA = 'ISCM_263',
-                SECTION = 'GENERALE',
-                CARA = ('A', 'IY', 'IZ', 'JX'),
-                VALE = (8.84, 170.0, 16.7, 0.622)
-            ),
-            _F(
-                GROUP_MA = 'ISCM_296',
-                SECTION = 'GENERALE',
-                CARA = ('A', 'IY', 'IZ', 'JX'),
-                VALE = (8.84, 170.0, 16.7, 0.622)
+                GROUP_MA = 'ISCM_86',
+                SECTION = 'RECTANGLE',
+                CARA = ('HY', 'HZ'),
+                VALE = (300.0, 300.0)
             ),
     ),
     ORIENTATION = (
         _F(
-            GROUP_MA = 'ISCM_228',
-            CARA = ('ANGL_VRIL',),
-            VALE = 0
-        ),
-        _F(
-            GROUP_MA = 'ISCM_263',
-            CARA = ('ANGL_VRIL',),
-            VALE = 0
-        ),
-        _F(
-            GROUP_MA = 'ISCM_296',
+            GROUP_MA = 'ISCM_86',
             CARA = ('ANGL_VRIL',),
             VALE = 0
         ),
@@ -120,7 +74,7 @@ grdSupps = AFFE_CHAR_MECA(
     MODELE = model,
     DDL_IMPO = (
         _F(
-            GROUP_NO = 'ISCM_228_to_ISPC_236',
+            GROUP_NO = 'ISCM_86_to_ISPC_63',
             DX = 0,
             DY = 0,
             DZ = 0,
@@ -129,7 +83,7 @@ grdSupps = AFFE_CHAR_MECA(
             DRZ = 0,
         ),
         _F(
-            GROUP_NO = 'ISCM_263_to_ISPC_271',
+            GROUP_NO = 'ISCM_86_to_ISPC_81',
             DX = 0,
             DY = 0,
             DZ = 0,
@@ -139,14 +93,6 @@ grdSupps = AFFE_CHAR_MECA(
         ),
     ),
     LIAISON_UNIF = (
-        _F(
-            GROUP_NO = ('ISCM_228_to_ISPC_247', 'ISCM_296_to_ISPC_247'),
-            DDL = ('DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ')
-        ),
-        _F(
-            GROUP_NO = ('ISCM_263_to_ISPC_280', 'ISCM_296_to_ISPC_280'),
-            DDL = ('DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ')
-        ),
     ),
 )
 # STEP: DEFINE LOAD

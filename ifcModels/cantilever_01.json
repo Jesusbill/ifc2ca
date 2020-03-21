@@ -1,16 +1,14 @@
 {
-    "title": "My Model",
-    "units": {
-        "length": "m",
-        "force": "N",
-        "angle": "deg"
-    },
+    "ifcName": "IfcStructuralAnalysisModel|104",
+    "name": "My Model",
+    "id": "2yFG1aG7D9S8thzIWlyESA",
     "elements": [
         {
             "ifcName": "IfcStructuralCurveMember|133",
             "name": "My Beam",
             "id": "0zncXJTUL98AfSMYRuKE89",
-            "geometryType": "straightLine",
+            "geometryType": "line",
+            "predefinedType": "RIGID_JOINED_MEMBER",
             "geometry": [
                 [
                     0.0,
@@ -23,9 +21,9 @@
                     0.0
                 ]
             ],
-            "rotation": 0,
             "material": {
                 "ifcName": "IfcMaterial|95",
+                "name": "Material",
                 "mechProps": {
                     "youngModulus": 210000000.0,
                     "poissonRatio": 0.2
@@ -36,18 +34,24 @@
             },
             "profile": {
                 "ifcName": "IfcRectangleProfileDef|102",
-                "profileType": "rectangular",
-                "profileVariation": "constant",
+                "profileName": "My Rectangular Profile",
+                "profileType": "AREA",
+                "profileShape": "rectangular",
                 "xDim": 0.2,
                 "yDim": 0.4
             },
-            "elementType": "EulerBeam"
+            "connections": [
+                {
+                    "ifcName": "IfcRelConnectsStructuralMember|151",
+                    "id": null,
+                    "relatingElement": "IfcStructuralCurveMember|133",
+                    "relatedConnection": "IfcStructuralPointConnection|148",
+                    "eccentricity": null
+                }
+            ]
         }
     ],
-    "mesh": {
-        "meshSize": 0.2
-    },
-    "supports": [
+    "connections": [
         {
             "ifcName": "IfcStructuralPointConnection|148",
             "name": "Empty",
@@ -67,9 +71,14 @@
                 "drz": true
             },
             "relatedElements": [
-                "IfcStructuralCurveMember|133"
+                {
+                    "ifcName": "IfcRelConnectsStructuralMember|151",
+                    "id": null,
+                    "relatingElement": "IfcStructuralCurveMember|133",
+                    "relatedConnection": "IfcStructuralPointConnection|148",
+                    "eccentricity": null
+                }
             ]
         }
-    ],
-    "connections": []
+    ]
 }

@@ -1,11 +1,11 @@
 # Command file generated for ifcOpenShell/BlenderBim
 # Aether Engineering - www.aethereng.com
 
-# Linear analysis with beam elements
+# Linear Static Analysis With Self-Weight
 
 # STEP: INITIALIZE STUDY
 DEBUT(
-    PAR_LOT = 'OUI',
+    PAR_LOT = 'NON'
 )
 
 # STEP: READ MED FILE
@@ -23,10 +23,10 @@ model = AFFE_MODELE(
             MODELISATION = '3D'
         ),
         _F(
-            GROUP_MA = 'lines',
+            GROUP_MA = ('ISCM_133',),
             PHENOMENE = 'MECANIQUE',
             MODELISATION = 'POU_D_E'
-        )
+        ),
     )
 )
 
@@ -43,7 +43,7 @@ material = AFFE_MATERIAU(
     MAILLAGE = mesh,
     AFFE = (
         _F(
-            GROUP_MA = 'IfcStructuralCurveMe_133',
+            GROUP_MA = 'ISCM_133',
             MATER = matF_0,
         ),
     )
@@ -53,20 +53,18 @@ material = AFFE_MATERIAU(
 element = AFFE_CARA_ELEM(
     MODELE = model,
     POUTRE = (
-        _F(
-            GROUP_MA = 'IfcStructuralCurveMe_133',
-            SECTION = 'RECTANGLE',
-            CARA = ('HY', 'HZ'),
-            VALE = (0.2, 0.4)
-
-        ),
+            _F(
+                GROUP_MA = 'ISCM_133',
+                SECTION = 'RECTANGLE',
+                CARA = ('HY', 'HZ'),
+                VALE = (0.2, 0.4)
+            ),
     ),
     ORIENTATION = (
         _F(
-            GROUP_MA = 'IfcStructuralCurveMe_133',
+            GROUP_MA = 'ISCM_133',
             CARA = ('ANGL_VRIL',),
-            VALE = (0,),
-
+            VALE = 0
         ),
     )
 )
@@ -76,7 +74,7 @@ grdSupps = AFFE_CHAR_MECA(
     MODELE = model,
     DDL_IMPO = (
         _F(
-            GROUP_NO = 'IfcStructuralPointCo_148',
+            GROUP_NO = 'ISCM_133_to_ISPC_148',
             DX = 0,
             DY = 0,
             DZ = 0,
@@ -84,15 +82,17 @@ grdSupps = AFFE_CHAR_MECA(
             DRY = 0,
             DRZ = 0,
         ),
-    )
+    ),
+    LIAISON_UNIF = (
+    ),
 )
 # STEP: DEFINE LOAD
 exPESA = AFFE_CHAR_MECA(
     MODELE = model,
     PESANTEUR = _F(
         GRAVITE = 9.806,
-        DIRECTION = (0.,0.,-1.),
-    ),
+        DIRECTION = (0.,0.,-1.)
+    )
 )
 
 # STEP: RUN ANALYSIS
@@ -102,10 +102,10 @@ res_Bld = MECA_STATIQUE(
     CARA_ELEM = element,
     EXCIT = (
         _F(
-            CHARGE = grdSupps,
+            CHARGE = grdSupps
         ),
         _F(
-            CHARGE = exPESA,
+            CHARGE = exPESA
         )
     )
 )
@@ -117,8 +117,8 @@ IMPR_RESU(
 	RESU = _F(
  		RESULTAT = res_Bld,
  		NOM_CHAM = ('DEPL',), # 'REAC_NODA', 'FORC_NODA',
- 		NOM_CHAM_MED = ('Bld_DISP',), #  'Bld_REAC', 'Bld_FORC',
-    ),
+ 		NOM_CHAM_MED = ('Bld_DISP',), #  'Bld_REAC', 'Bld_FORC'
+    )
 )
 
 # STEP: CONCLUDE STUDY

@@ -1,0 +1,128 @@
+{
+    "ifcName": "IfcStructuralAnalysisModel|72",
+    "name": "beam example.EDB",
+    "id": "16GlpLAhr6UgLoZdff86vk",
+    "elements": [
+        {
+            "ifcName": "IfcStructuralCurveMember|86",
+            "name": "1",
+            "id": "0ae5fB0sH3BQbUobwBTsv2",
+            "geometryType": "line",
+            "predefinedType": "RIGID_JOINED_MEMBER",
+            "geometry": [
+                [
+                    0.0,
+                    4000.0,
+                    4000.0
+                ],
+                [
+                    4000.0,
+                    4000.0,
+                    4000.0
+                ]
+            ],
+            "material": {
+                "ifcName": "IfcMaterial|100",
+                "name": "Concrete",
+                "mechProps": {
+                    "compressiveStrength": 16.0,
+                    "massDensity": 2.5e-09,
+                    "poissonRatio": 0.2,
+                    "shearModulus": 12500.0,
+                    "thermalExpansionCoefficient": 9.9e-06,
+                    "youngModulus": 30000.0
+                },
+                "commonProps": {
+                    "compressiveStrength": 16.0,
+                    "massDensity": 2.5e-09,
+                    "poissonRatio": 0.2,
+                    "shearModulus": 12500.0,
+                    "thermalExpansionCoefficient": 9.9e-06,
+                    "youngModulus": 30000.0
+                }
+            },
+            "profile": {
+                "ifcName": "IfcRectangleProfileDef|110",
+                "profileName": "ConcBm",
+                "profileType": "AREA",
+                "profileShape": "rectangular",
+                "xDim": 300.0,
+                "yDim": 300.0
+            },
+            "connections": [
+                {
+                    "ifcName": "IfcRelConnectsStructuralMember|87",
+                    "id": "0kgdlUdhzEWQN7xmTQEsQF",
+                    "relatingElement": "IfcStructuralCurveMember|86",
+                    "relatedConnection": "IfcStructuralPointConnection|63",
+                    "eccentricity": null
+                },
+                {
+                    "ifcName": "IfcRelConnectsStructuralMember|88",
+                    "id": "3uYaEAVEb7uhAQB21Bo8QK",
+                    "relatingElement": "IfcStructuralCurveMember|86",
+                    "relatedConnection": "IfcStructuralPointConnection|81",
+                    "eccentricity": null
+                }
+            ]
+        }
+    ],
+    "connections": [
+        {
+            "ifcName": "IfcStructuralPointConnection|63",
+            "name": "1",
+            "id": "3WO_dPG_D85e93$T8UVZYm",
+            "geometryType": "point",
+            "geometry": [
+                0.0,
+                4000.0,
+                4000.0
+            ],
+            "appliedCondition": {
+                "dx": true,
+                "dy": true,
+                "dz": true,
+                "drx": true,
+                "dry": true,
+                "drz": true
+            },
+            "relatedElements": [
+                {
+                    "ifcName": "IfcRelConnectsStructuralMember|87",
+                    "id": "0kgdlUdhzEWQN7xmTQEsQF",
+                    "relatingElement": "IfcStructuralCurveMember|86",
+                    "relatedConnection": "IfcStructuralPointConnection|63",
+                    "eccentricity": null
+                }
+            ]
+        },
+        {
+            "ifcName": "IfcStructuralPointConnection|81",
+            "name": "2",
+            "id": "0LwrJu9VLDyg2U$$_u2LZU",
+            "geometryType": "point",
+            "geometry": [
+                4000.0,
+                4000.0,
+                4000.0
+            ],
+            "appliedCondition": {
+                "dx": true,
+                "dy": true,
+                "dz": true,
+                "drx": true,
+                "dry": true,
+                "drz": true
+            },
+            "relatedElements": [
+                {
+                    "ifcName": "IfcRelConnectsStructuralMember|88",
+                    "id": "3uYaEAVEb7uhAQB21Bo8QK",
+                    "relatingElement": "IfcStructuralCurveMember|86",
+                    "relatedConnection": "IfcStructuralPointConnection|81",
+                    "eccentricity": null
+                }
+            ]
+        }
+    ]
+}
